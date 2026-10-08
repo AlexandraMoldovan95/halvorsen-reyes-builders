@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin — Halvorsen &amp; Reyes Builders</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="index.html" class="logo">Halvorsen <span>&amp;</span> Reyes <span>Builders</span></a>
+    <span class="eyebrow" style="margin-left:auto;">Panou admin</span>
+  </div>
+</header>
+
+<main class="container admin-wrap">
+
+  <section id="loginView" class="admin-card">
+    <h1 class="section-title" style="font-size:1.8rem;">Login</h1>
+    <p class="section-lede">Doar pentru Erik și Camila. Contul se creează din Supabase, nu de aici.</p>
+    <form id="loginForm" novalidate>
+      <div class="field-group">
+        <label for="a-email">Email</label>
+        <input class="field" type="email" id="a-email" name="email" required autocomplete="username">
+      </div>
+      <div class="field-group" style="margin-top:1.1rem;">
+        <label for="a-parola">Parolă</label>
+        <input class="field" type="password" id="a-parola" name="parola" required autocomplete="current-password">
+      </div>
+      <button type="submit" class="btn btn-primary" style="margin-top:1.5rem;">Intră în cont</button>
+      <p class="form-status" id="loginStatus" role="status" aria-live="polite"></p>
+    </form>
+  </section>
+
+  <section id="leadsView" class="admin-card" style="display:none;">
+    <div class="admin-head">
+      <div>
+        <h1 class="section-title" style="font-size:1.8rem; margin-bottom:0.25rem;">Cereri de ofertă</h1>
+        <p class="eyebrow" id="loggedInAs"></p>
+      </div>
+      <button class="btn btn-secondary" id="logoutBtn">Ieși din cont</button>
+    </div>
+    <p class="form-status" id="leadsStatus" role="status" aria-live="polite"></p>
+    <div class="admin-table-wrap">
+      <table class="admin-table" id="leadsTable">
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Nume</th>
+            <th>Contact</th>
+            <th>Tip proiect</th>
+            <th>Buget</th>
+            <th>Mesaj</th>
+          </tr>
+        </thead>
+        <tbody id="leadsBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/dist/umd/supabase.js"
+  integrity="sha384-iLddHTLokph6Omwoyid4XKxHaWa6w41BnoEj0q5oOrzmYPpHIKt1wyjReA7s//pP"
+  crossorigin="anonymous"></script>
+<script src="config.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>

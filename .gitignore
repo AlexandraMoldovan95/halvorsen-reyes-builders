@@ -1,0 +1,11 @@
+# Local Netlify folder
+.netlify
+
+# Dev/course artifacts, not needed in the public repo
+.claude/
+.playwright-mcp/
+reference-screenshots/
+*.pdf
+
+# Raw unprocessed client photos (source material, not used by the site — images/projects/ has the optimized versions actually shipped)
+Group/

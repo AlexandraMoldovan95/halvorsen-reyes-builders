@@ -1,0 +1,791 @@
+/* ===== Halvorsen & Reyes Builders — Blueprint Editorial (DESIGN.md) ===== */
+
+/* Fonturi găzduite local (fonts/), în loc de Google Fonts: pe mobil, fonturile
+   de la Google (~290 KB, 8 fișiere, 2 domenii în plus) concurau cu poza din hero.
+   Fișierele sunt generate din sursele oficiale google/fonts (licență OFL), doar
+   grosimile folosite pe site, cu caractere latine + diacritice românești
+   (ă â î ș ț, inclusiv formele cu sedilă). Detalii: fonts/README.md. */
+@font-face { font-family: 'Playfair Display'; font-style: normal; font-weight: 700; font-display: swap; src: url('fonts/playfair-display-700.woff2') format('woff2'); }
+@font-face { font-family: 'Playfair Display'; font-style: normal; font-weight: 800; font-display: swap; src: url('fonts/playfair-display-800.woff2') format('woff2'); }
+@font-face { font-family: 'Lora'; font-style: normal; font-weight: 400; font-display: swap; src: url('fonts/lora-400.woff2') format('woff2'); }
+@font-face { font-family: 'Lora'; font-style: italic; font-weight: 400; font-display: swap; src: url('fonts/lora-400-italic.woff2') format('woff2'); }
+@font-face { font-family: 'Inter'; font-style: normal; font-weight: 400; font-display: swap; src: url('fonts/inter-400.woff2') format('woff2'); }
+@font-face { font-family: 'Inter'; font-style: normal; font-weight: 600; font-display: swap; src: url('fonts/inter-600.woff2') format('woff2'); }
+@font-face { font-family: 'Inter'; font-style: normal; font-weight: 700; font-display: swap; src: url('fonts/inter-700.woff2') format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-style: normal; font-weight: 400; font-display: swap; src: url('fonts/jetbrains-mono-400.woff2') format('woff2'); }
+
+/* Fonturi de rezervă cu metrici ajustate: până se încarcă fonturile de mai sus,
+   textul apare în Times New Roman / Arial / Courier New, redimensionate
+   (size-adjust + ascent/descent) ca să ocupe cam același spațiu. Fără ele,
+   titlul din hero se muta vizibil la schimbarea fontului (CLS 0.32 pe desktop).
+   Valorile sunt calculate cu fontTools din fonturile de mai sus vs. Liberation
+   (metric-compatibile cu Times New Roman / Arial / Courier New). */
+@font-face { font-family: 'Playfair Display Fallback'; font-weight: 700 800; src: local('Times New Roman Bold'), local('TimesNewRomanPS-BoldMT'), local('Liberation Serif Bold'), local('LiberationSerif-Bold'); size-adjust: 108.06%; ascent-override: 100.13%; descent-override: 23.23%; line-gap-override: 0%; }
+@font-face { font-family: 'Lora Fallback'; font-weight: 400; src: local('Times New Roman'), local('TimesNewRomanPSMT'), local('Liberation Serif'), local('LiberationSerif'); size-adjust: 114.49%; ascent-override: 87.87%; descent-override: 23.93%; line-gap-override: 0%; }
+@font-face { font-family: 'Inter Fallback'; font-weight: 400; src: local('Arial'), local('ArialMT'), local('Liberation Sans'), local('LiberationSans'); size-adjust: 105.94%; ascent-override: 91.45%; descent-override: 22.77%; line-gap-override: 0%; }
+@font-face { font-family: 'Inter Fallback'; font-weight: 600 700; src: local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('LiberationSans-Bold'); size-adjust: 95.13%; ascent-override: 101.83%; descent-override: 25.36%; line-gap-override: 0%; }
+@font-face { font-family: 'JetBrains Mono Fallback'; font-weight: 400; src: local('Courier New'), local('CourierNewPSMT'), local('Liberation Mono'), local('LiberationMono'); size-adjust: 99.98%; ascent-override: 102.02%; descent-override: 30%; line-gap-override: 0%; }
+
+html {
+  scroll-padding-top: 79px;
+}
+@media (max-width: 899px) {
+  html { scroll-padding-top: 77px; }
+}
+:root {
+  --bg: #F9F9F7;
+  --ink: #111111;
+  --muted: #E5E5E0;
+  --accent: #CC0000;
+  --neutral-100: #F5F5F5;
+  --neutral-200: #E5E5E5;
+  --neutral-400: #A3A3A3; /* text secundar pe fundal --ink (contact): 7.5:1 */
+  --neutral-500: #737373;
+  --neutral-600: #525252;
+  --neutral-700: #404040;
+  --success: #1a7a1a; /* text pe --bg: 5.1:1 (AA) */
+
+  --font-display: 'Playfair Display', 'Playfair Display Fallback', 'Times New Roman', serif;
+  --font-body: 'Lora', 'Lora Fallback', Georgia, serif;
+  --font-ui: 'Inter', 'Inter Fallback', 'Helvetica Neue', sans-serif;
+  --font-mono: 'JetBrains Mono', 'JetBrains Mono Fallback', 'Courier New', monospace;
+
+  --container: 1280px;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background-color: var(--bg);
+  background-image: radial-gradient(rgba(17,17,17,0.05) 0.6px, transparent 0.6px);
+  background-size: 16px 16px;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+img { max-width: 100%; display: block; }
+a { color: inherit; }
+
+.container {
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+@media (min-width: 1024px) { .container { padding-inline: 2rem; } }
+
+h1, h2, h3 { font-family: var(--font-display); margin: 0; }
+p { margin: 0 0 1rem; }
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--neutral-600);
+}
+
+.section-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+
+.section-lede {
+  font-family: var(--font-ui);
+  color: var(--neutral-600);
+  max-width: 29em; /* = 46ch în Inter 400 */
+  margin-bottom: 2.5rem;
+}
+
+section { position: relative; }
+
+/* ===== Focus / a11y ===== */
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+/* Pe fundaluri --ink (hero peste poză, contact, header chat) outline-ul negru
+   ar fi invizibil — acolo focusul se inversează în alb. */
+.hero-content :focus-visible,
+.contact :focus-visible,
+.chat-head :focus-visible {
+  outline-color: var(--bg);
+}
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+/* Skip link: ascuns până primește focus din tastatură, apoi vizibil. */
+.skip-link:focus {
+  position: fixed; top: 0.5rem; left: 0.5rem;
+  width: auto; height: auto; clip: auto;
+  z-index: 60;
+  padding: 0.75rem 1rem;
+  background: var(--ink); color: var(--bg);
+  font-family: var(--font-ui); font-size: 0.85rem;
+  outline-color: var(--accent);
+}
+
+/* ===== Buttons ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0.9rem 1.75rem;
+  border-radius: 0;
+  font-family: var(--font-ui);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: background 0.2s ease-out, color 0.2s ease-out, border-color 0.2s ease-out;
+  text-decoration: none;
+}
+.btn-primary {
+  background: var(--ink);
+  color: var(--bg);
+  border: 1px solid var(--ink);
+}
+.btn-primary:hover { background: var(--bg); color: var(--ink); }
+
+.btn-secondary {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--ink);
+}
+.btn-secondary:hover { background: var(--ink); color: var(--bg); }
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--ink);
+}
+.btn-ghost:hover { background: var(--neutral-100); }
+
+/* ===== Header ===== */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--bg);
+  border-bottom: 1px solid var(--ink);
+}
+.site-header .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: 1rem;
+}
+.logo {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.15rem;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+}
+.logo span { color: var(--accent); }
+
+.nav-links {
+  display: none;
+  gap: 2rem;
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  list-style: none;
+  margin: 0; padding: 0;
+}
+.nav-links a { text-decoration: none; }
+.nav-links a:hover { color: var(--accent); }
+
+.nav-toggle {
+  min-height: 44px; min-width: 44px;
+  border: 1px solid var(--ink);
+  background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* Butonul de ofertă din header: ascuns pe mobil (meniul mobil are deja
+   propriul buton, pe toată lățimea), vizibil pe desktop lângă nav-links. */
+#headerCta { display: none; }
+
+/* Regula de mai jos trebuie să vină DUPĂ regulile de bază de mai sus:
+   la specificitate egală, CSS-ul aplică ultima regulă din fișier — dacă
+   media query-ul ar fi înaintea bazei, ar fi ignorat la orice lățime. */
+@media (min-width: 900px) {
+  .nav-links { display: flex; }
+  .nav-toggle { display: none; }
+  #headerCta { display: inline-flex; }
+}
+
+.mobile-nav {
+  display: none;
+  border-bottom: 1px solid var(--ink);
+  background: var(--bg);
+}
+.mobile-nav.open { display: block; }
+.mobile-nav ul {
+  list-style: none; margin: 0; padding: 1rem;
+  display: flex; flex-direction: column; gap: 1rem;
+  font-family: var(--font-ui); text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.85rem;
+}
+.mobile-nav a { text-decoration: none; }
+@media (min-width: 900px) { .mobile-nav { display: none !important; } }
+
+/* ===== Hero ===== */
+.hero {
+  position: relative;
+  /* 100svh ar depăși fereastra cu exact înălțimea header-ului sticky de
+     deasupra (~80px) — asta lăsa butoanele din hero-actions parțial sub
+     fold la încărcare. Scădem header-ul, ca hero + header să încapă exact. */
+  height: calc(100svh - 80px);
+  min-height: 480px;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+.hero-media {
+  position: absolute; inset: 0;
+  overflow: hidden;
+}
+.hero-media img {
+  width: 100%; height: 100%; object-fit: cover;
+}
+.hero-media::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(0deg, rgba(17,17,17,0.85) 0%, rgba(17,17,17,0.55) 50%, rgba(17,17,17,0.38) 100%);
+}
+.hero-content {
+  position: relative;
+  z-index: 1;
+  color: var(--bg);
+  padding-block: 3rem;
+  width: 100%;
+}
+.hero-badge {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  border: 1px solid var(--bg);
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  margin-bottom: 1.25rem;
+}
+.hero-title {
+  font-size: clamp(2.75rem, 7vw, 6.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  font-weight: 800;
+  margin-bottom: 1.25rem;
+  /* em, nu ch: „ch” = lățimea cifrei 0 din fontul curent, deci se schimba când
+     Playfair înlocuia fontul de rezervă -> titlul trecea de pe 3 rânduri pe 2
+     (layout shift). 10.56em = 16ch în Playfair Display 800. */
+  max-width: 10.56em;
+}
+.hero-title .word { display: inline-block; }
+.hero-sub {
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  max-width: 26.5em; /* = 42ch în Inter 400, independent de font (vezi .hero-title) */
+  color: var(--neutral-200);
+  margin-bottom: 1.75rem;
+}
+.hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+/* Varianta doar-contur (fundal transparent, text deschis) avea contrast slab
+   pe poza din hero — pe unele zone ale pozei era greu de citit până la hover.
+   Fundal solid, ca butonul principal, rezolvă asta din prima, nu doar la hover. */
+.hero-actions .btn-secondary {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+}
+.hero-actions .btn-secondary:hover {
+  background: var(--bg);
+  color: var(--ink);
+  border-color: var(--bg);
+}
+
+.hero-card {
+  border: 3px solid var(--ink);
+}
+
+.contact .btn-secondary {
+  border-color: var(--bg);
+  color: var(--bg);
+}
+.contact .btn-secondary:hover {
+  background: var(--bg);
+  color: var(--ink);
+}
+
+/* ===== Servicii ===== */
+.services {
+  padding-block: 6rem;
+  border-bottom: 1px solid var(--ink);
+}
+.services-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  border: 1px solid var(--ink);
+}
+@media (min-width: 768px) {
+  .services-grid { grid-template-columns: repeat(3, 1fr); }
+}
+.service-card {
+  padding: 2rem;
+  border-bottom: 1px solid var(--ink);
+}
+@media (min-width: 768px) {
+  .service-card { border-bottom: none; border-right: 1px solid var(--ink); }
+  .service-card:last-child { border-right: none; }
+}
+.service-icon {
+  width: 48px; height: 48px;
+  border: 1px solid var(--ink);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 1.25rem;
+  transition: background 0.2s ease-out, color 0.2s ease-out;
+}
+.service-card:hover .service-icon { background: var(--ink); color: var(--bg); }
+.service-icon svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.5; }
+.service-card h3 { font-size: 1.4rem; margin-bottom: 0.6rem; }
+.service-card p { font-family: var(--font-ui); font-size: 0.92rem; color: var(--neutral-600); margin-bottom: 0; }
+
+/* ===== Portofoliu ===== */
+.portfolio {
+  padding-block: 6rem;
+  border-bottom: 1px solid var(--ink);
+  background: var(--neutral-100);
+}
+.portfolio .container.head { margin-bottom: 2rem; }
+
+.portfolio-carousel {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.portfolio-viewport {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--ink);
+  background: var(--bg);
+}
+.portfolio-track {
+  display: flex;
+  /* singura mișcare orizontală e asta, declanșată de butoane — nu de scroll */
+  transition: transform 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+}
+.project-panel {
+  flex: 0 0 100%;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  background: var(--bg);
+  min-height: min(72vh, 640px);
+}
+@media (min-width: 900px) {
+  .project-panel { grid-template-columns: 1.1fr 0.9fr; min-height: min(76vh, 680px); }
+}
+
+.portfolio-arrow {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--ink);
+  background: var(--bg);
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease-out, color 0.2s ease-out;
+}
+.portfolio-arrow svg { stroke: currentColor; }
+.portfolio-arrow:hover:not(:disabled) { background: var(--ink); color: var(--bg); }
+.portfolio-arrow:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.project-media {
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--ink);
+}
+@media (min-width: 900px) {
+  .project-media { border-bottom: none; border-right: 1px solid var(--ink); }
+}
+.project-media img.project-hero-img {
+  width: 100%; height: 100%; object-fit: cover; min-height: 320px;
+}
+.project-thumbs {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  display: flex;
+  border-top: 1px solid var(--ink);
+}
+/* Structură inspirată din REFERENCE.md (thorsenconstruction.us): overlay
+   întunecat cu numele proiectului la hover pe fiecare poză mică — nu se
+   copiază text/poze/cod de acolo, doar tiparul de interacțiune. */
+.project-thumbs .thumb {
+  position: relative;
+  width: 25%;
+  border-right: 1px solid var(--ink);
+}
+.project-thumbs .thumb:last-child { border-right: none; }
+.project-thumbs .thumb img {
+  display: block;
+  width: 100%;
+  /* height:auto — altfel atributul height="320" din HTML bate aspect-ratio
+     și miniaturile ieșeau fâșii de 320px înălțime peste poza principală. */
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  filter: brightness(0.92);
+}
+.project-thumbs .thumb::after {
+  content: attr(data-label);
+  position: absolute; inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0.35rem;
+  background: rgba(17, 17, 17, 0.75);
+  color: var(--bg);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
+  pointer-events: none;
+}
+.project-thumbs .thumb:hover::after {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .project-thumbs .thumb::after { transition: none; }
+}
+
+.project-info { padding: 2rem; display: flex; flex-direction: column; }
+.project-index {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--neutral-500);
+  margin-bottom: 0.5rem;
+}
+.project-tag {
+  display: inline-block;
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  padding: 0.25rem 0.6rem;
+  margin-bottom: 1rem;
+}
+.project-info h3 { font-size: clamp(1.6rem, 3vw, 2.2rem); margin-bottom: 0.75rem; }
+.project-info p { font-family: var(--font-body); color: var(--neutral-700); }
+.project-meta {
+  margin-top: auto;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--neutral-500);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.portfolio-progress {
+  display: flex;
+  gap: 0.4rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+.portfolio-progress { gap: 0; }
+.portfolio-progress button {
+  /* țintă tactilă 44×44, bara vizuală rămâne subțire */
+  width: 44px; height: 44px;
+  padding: 0 8px;
+  display: flex; align-items: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+.portfolio-progress button::before {
+  content: '';
+  display: block;
+  flex: 1;
+  width: 100%; height: 3px;
+  background: var(--muted);
+}
+.portfolio-progress button.active::before { background: var(--ink); }
+
+/* ===== Echipă ===== */
+.team {
+  padding-block: 6rem;
+  border-bottom: 1px solid var(--ink);
+}
+.team-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+  align-items: center;
+}
+@media (min-width: 900px) {
+  .team-grid { grid-template-columns: 5fr 7fr; }
+}
+.team-photo { margin: 0; border: 3px solid var(--ink); }
+/* Fără height:auto, atributul height="554" din HTML ține înălțimea fixă
+   când lățimea scade pe mobil (ex. 337×554) — poza pătrată ieșea turtită. */
+.team-photo img { width: 100%; height: auto; }
+.team-photo figcaption {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--neutral-600);
+  padding: 0.6rem 0.6rem;
+}
+.team-copy > p:first-of-type::first-letter {
+  font-family: var(--font-display);
+  font-size: 3.8rem;
+  float: left;
+  line-height: 0.8;
+  padding-right: 0.5rem;
+  font-weight: 700;
+}
+.founders {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  border: 1px solid var(--ink);
+}
+@media (min-width: 560px) { .founders { grid-template-columns: 1fr 1fr; } }
+.founder {
+  padding: 1.25rem;
+  border-bottom: 1px solid var(--ink);
+}
+@media (min-width: 560px) {
+  .founder { border-bottom: none; border-right: 1px solid var(--ink); }
+  .founder:last-child { border-right: none; }
+}
+.founder .role {
+  font-family: var(--font-mono);
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent);
+}
+.founder .name { font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; margin: 0.25rem 0; }
+.founder-bio { font-family: var(--font-ui); font-size: 0.85rem; color: var(--neutral-600); margin: 0; }
+.badge-strip {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--neutral-600);
+  margin-top: 1.5rem;
+}
+
+/* ===== Contact ===== */
+.contact {
+  padding-block: 6rem;
+  background: var(--ink);
+  color: var(--bg);
+}
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+}
+@media (min-width: 900px) { .contact-grid { grid-template-columns: 1fr 1fr; } }
+.contact h2 { color: var(--bg); }
+.contact .eyebrow { color: var(--neutral-400); }
+.contact-lede { font-family: var(--font-ui); color: var(--neutral-400); max-width: 27.75em; /* = 44ch în Inter 400 */ }
+.contact-details { font-family: var(--font-ui); }
+.contact-details dl {
+  display: grid; grid-template-columns: auto 1fr; gap: 0.5rem 1.5rem;
+  margin: 1.5rem 0 0;
+}
+.contact-details dt {
+  font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--neutral-400);
+}
+.contact-details dd { margin: 0; }
+.contact-details a { text-decoration: none; border-bottom: 1px solid var(--bg); }
+.contact-details a:hover { color: var(--neutral-200); border-bottom-color: var(--neutral-200); }
+
+/* ===== Modal formular ===== */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(17,17,17,0.7);
+  display: none;
+  align-items: center; justify-content: center;
+  z-index: 50;
+  padding: 1rem;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--bg);
+  border: 1px solid var(--ink);
+  max-width: 560px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 2rem;
+  position: relative;
+}
+.modal-close {
+  position: absolute; top: 1rem; right: 1rem;
+  min-width: 44px; min-height: 44px;
+  border: 1px solid var(--ink);
+  background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+.modal h2 { font-size: 1.6rem; margin-bottom: 0.5rem; }
+.modal .section-lede { margin-bottom: 1.5rem; }
+
+.form-grid { display: grid; grid-template-columns: 1fr; gap: 1.1rem; }
+@media (min-width: 560px) {
+  .form-grid.two { grid-template-columns: 1fr 1fr; }
+}
+.field-group { display: flex; flex-direction: column; gap: 0.35rem; }
+.field-group label {
+  font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--neutral-600);
+}
+.field {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--ink);
+  border-radius: 0;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  padding: 0.6rem 0.25rem;
+  color: var(--ink);
+}
+/* #F0F0F0 pe --bg (#F9F9F7) are contrast ~1.05:1 — practic invizibil. Păstrăm
+   fundalul din DESIGN.md, dar adăugăm outline-ul standard ca indicator real. */
+.field:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; background: var(--neutral-100); }
+textarea.field { resize: vertical; min-height: 90px; font-family: var(--font-ui); }
+.field-error {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  color: var(--accent);
+  min-height: 1.1em;
+}
+.field.invalid { border-bottom-color: var(--accent); }
+
+.form-status {
+  font-family: var(--font-ui);
+  font-size: 0.88rem;
+  margin-top: 1rem;
+  min-height: 1.2em;
+}
+.form-status.success { color: var(--success); }
+.form-status.error { color: var(--accent); }
+
+/* ===== Chatbot ===== */
+.chat-launcher {
+  position: fixed;
+  bottom: 1.25rem; right: 1.25rem;
+  z-index: 45;
+  width: 56px; height: 56px;
+  border-radius: 0;
+  background: var(--ink);
+  color: var(--bg);
+  border: 1px solid var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 0 rgba(17,17,17,0.3);
+}
+.chat-launcher img { width: 32px; height: 32px; object-fit: cover; }
+
+.chat-panel {
+  position: fixed;
+  bottom: 1.25rem; right: 1.25rem;
+  z-index: 46;
+  width: min(360px, calc(100vw - 2rem));
+  height: min(500px, calc(100vh - 3rem));
+  background: var(--bg);
+  border: 1px solid var(--ink);
+  display: none;
+  flex-direction: column;
+  box-shadow: 6px 6px 0 0 rgba(17,17,17,0.25);
+}
+.chat-panel.open { display: flex; }
+.chat-head {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid var(--ink);
+  background: var(--ink); color: var(--bg);
+}
+.chat-head img { width: 30px; height: 30px; object-fit: cover; border: 1px solid var(--bg); }
+.chat-head strong { font-family: var(--font-ui); font-size: 0.9rem; }
+.chat-head button {
+  margin-left: auto;
+  background: transparent; border: none; color: var(--bg);
+  min-width: 44px; min-height: 44px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.chat-body {
+  flex: 1; overflow-y: auto;
+  padding: 1rem;
+  display: flex; flex-direction: column; gap: 0.75rem;
+  font-family: var(--font-ui); font-size: 0.88rem;
+}
+.chat-msg { max-width: 85%; padding: 0.6rem 0.8rem; border: 1px solid var(--muted); }
+.chat-msg.bot { align-self: flex-start; background: var(--neutral-100); }
+.chat-msg.user { align-self: flex-end; background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.chat-msg.typing { color: var(--neutral-600); font-style: italic; }
+.chat-form {
+  display: flex; border-top: 1px solid var(--ink);
+}
+.chat-form input {
+  flex: 1; border: none; background: transparent; padding: 0.8rem;
+  font-family: var(--font-ui); font-size: 0.88rem;
+}
+.chat-form input:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; background: var(--neutral-100); }
+.chat-form button {
+  border: none; border-left: 1px solid var(--ink);
+  background: var(--ink); color: var(--bg);
+  min-width: 52px; cursor: pointer;
+}
+
+/* ===== Footer ===== */
+.site-footer {
+  padding: 2rem 0;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--neutral-500);
+  text-align: center;
+}
+
+/* ===== Utilitare mici (înlocuiesc câteva style="" izolate) ===== */
+.btn-full { width: 100%; }
+.section-title--team { margin-bottom: 2rem; }
+.form-grid--spaced { margin-top: 1.1rem; }
+.btn-submit { margin-top: 1.5rem; }
+.contact-cta { margin-top: 1.5rem; }
+
+/* ===== Reduced motion ===== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
