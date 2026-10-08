@@ -1,10 +1,10 @@
 /* ===== Halvorsen & Reyes Builders — Blueprint Editorial (DESIGN.md) ===== */
 
-/* Fonturi găzduite local (fonts/), în loc de Google Fonts: pe mobil, fonturile
-   de la Google (~290 KB, 8 fișiere, 2 domenii în plus) concurau cu poza din hero.
-   Fișierele sunt generate din sursele oficiale google/fonts (licență OFL), doar
-   grosimile folosite pe site, cu caractere latine + diacritice românești
-   (ă â î ș ț, inclusiv formele cu sedilă). Detalii: fonts/README.md. */
+/* Locally hosted fonts (fonts/), instead of Google Fonts: on mobile, Google's
+   fonts (~290 KB, 8 files, 2 extra domains) competed with the hero photo.
+   The files are generated from the official google/fonts sources (OFL license),
+   only the weights used on the site, with Latin characters + Romanian diacritics
+   (ă â î ș ț, including the cedilla forms). Details: fonts/README.md. */
 @font-face { font-family: 'Playfair Display'; font-style: normal; font-weight: 700; font-display: swap; src: url('fonts/playfair-display-700.woff2') format('woff2'); }
 @font-face { font-family: 'Playfair Display'; font-style: normal; font-weight: 800; font-display: swap; src: url('fonts/playfair-display-800.woff2') format('woff2'); }
 @font-face { font-family: 'Lora'; font-style: normal; font-weight: 400; font-display: swap; src: url('fonts/lora-400.woff2') format('woff2'); }
@@ -14,12 +14,12 @@
 @font-face { font-family: 'Inter'; font-style: normal; font-weight: 700; font-display: swap; src: url('fonts/inter-700.woff2') format('woff2'); }
 @font-face { font-family: 'JetBrains Mono'; font-style: normal; font-weight: 400; font-display: swap; src: url('fonts/jetbrains-mono-400.woff2') format('woff2'); }
 
-/* Fonturi de rezervă cu metrici ajustate: până se încarcă fonturile de mai sus,
-   textul apare în Times New Roman / Arial / Courier New, redimensionate
-   (size-adjust + ascent/descent) ca să ocupe cam același spațiu. Fără ele,
-   titlul din hero se muta vizibil la schimbarea fontului (CLS 0.32 pe desktop).
-   Valorile sunt calculate cu fontTools din fonturile de mai sus vs. Liberation
-   (metric-compatibile cu Times New Roman / Arial / Courier New). */
+/* Fallback fonts with adjusted metrics: until the fonts above load,
+   the text appears in Times New Roman / Arial / Courier New, resized
+   (size-adjust + ascent/descent) to take up roughly the same space. Without
+   them, the hero title visibly shifted when the font swapped in (CLS 0.32 on
+   desktop). The values were computed with fontTools from the fonts above vs.
+   Liberation (metric-compatible with Times New Roman / Arial / Courier New). */
 @font-face { font-family: 'Playfair Display Fallback'; font-weight: 700 800; src: local('Times New Roman Bold'), local('TimesNewRomanPS-BoldMT'), local('Liberation Serif Bold'), local('LiberationSerif-Bold'); size-adjust: 108.06%; ascent-override: 100.13%; descent-override: 23.23%; line-gap-override: 0%; }
 @font-face { font-family: 'Lora Fallback'; font-weight: 400; src: local('Times New Roman'), local('TimesNewRomanPSMT'), local('Liberation Serif'), local('LiberationSerif'); size-adjust: 114.49%; ascent-override: 87.87%; descent-override: 23.93%; line-gap-override: 0%; }
 @font-face { font-family: 'Inter Fallback'; font-weight: 400; src: local('Arial'), local('ArialMT'), local('Liberation Sans'), local('LiberationSans'); size-adjust: 105.94%; ascent-override: 91.45%; descent-override: 22.77%; line-gap-override: 0%; }
@@ -39,11 +39,11 @@ html {
   --accent: #CC0000;
   --neutral-100: #F5F5F5;
   --neutral-200: #E5E5E5;
-  --neutral-400: #A3A3A3; /* text secundar pe fundal --ink (contact): 7.5:1 */
+  --neutral-400: #A3A3A3; /* secondary text on --ink background (contact): 7.5:1 */
   --neutral-500: #737373;
   --neutral-600: #525252;
   --neutral-700: #404040;
-  --success: #1a7a1a; /* text pe --bg: 5.1:1 (AA) */
+  --success: #1a7a1a; /* text on --bg: 5.1:1 (AA) */
 
   --font-display: 'Playfair Display', 'Playfair Display Fallback', 'Times New Roman', serif;
   --font-body: 'Lora', 'Lora Fallback', Georgia, serif;
@@ -98,7 +98,7 @@ p { margin: 0 0 1rem; }
 .section-lede {
   font-family: var(--font-ui);
   color: var(--neutral-600);
-  max-width: 29em; /* = 46ch în Inter 400 */
+  max-width: 29em; /* = 46ch in Inter 400 */
   margin-bottom: 2.5rem;
 }
 
@@ -109,8 +109,8 @@ section { position: relative; }
   outline: 2px solid var(--ink);
   outline-offset: 2px;
 }
-/* Pe fundaluri --ink (hero peste poză, contact, header chat) outline-ul negru
-   ar fi invizibil — acolo focusul se inversează în alb. */
+/* On --ink backgrounds (hero over photo, contact, chat header) the black
+   outline would be invisible — there the focus inverts to white. */
 .hero-content :focus-visible,
 .contact :focus-visible,
 .chat-head :focus-visible {
@@ -120,7 +120,7 @@ section { position: relative; }
   position: absolute; width: 1px; height: 1px; overflow: hidden;
   clip: rect(0 0 0 0); white-space: nowrap;
 }
-/* Skip link: ascuns până primește focus din tastatură, apoi vizibil. */
+/* Skip link: hidden until it receives keyboard focus, then visible. */
 .skip-link:focus {
   position: fixed; top: 0.5rem; left: 0.5rem;
   width: auto; height: auto; clip: auto;
@@ -213,13 +213,13 @@ section { position: relative; }
   display: flex; align-items: center; justify-content: center;
 }
 
-/* Butonul de ofertă din header: ascuns pe mobil (meniul mobil are deja
-   propriul buton, pe toată lățimea), vizibil pe desktop lângă nav-links. */
+/* The header's quote button: hidden on mobile (the mobile menu already has
+   its own full-width button), visible on desktop next to nav-links. */
 #headerCta { display: none; }
 
-/* Regula de mai jos trebuie să vină DUPĂ regulile de bază de mai sus:
-   la specificitate egală, CSS-ul aplică ultima regulă din fișier — dacă
-   media query-ul ar fi înaintea bazei, ar fi ignorat la orice lățime. */
+/* The rule below must come AFTER the base rules above: at equal specificity,
+   CSS applies the last rule in the file — if the media query came before the
+   base rule, it would be ignored at any width. */
 @media (min-width: 900px) {
   .nav-links { display: flex; }
   .nav-toggle { display: none; }
@@ -243,9 +243,9 @@ section { position: relative; }
 /* ===== Hero ===== */
 .hero {
   position: relative;
-  /* 100svh ar depăși fereastra cu exact înălțimea header-ului sticky de
-     deasupra (~80px) — asta lăsa butoanele din hero-actions parțial sub
-     fold la încărcare. Scădem header-ul, ca hero + header să încapă exact. */
+  /* 100svh would overflow the viewport by exactly the sticky header's height
+     above (~80px) — that left the hero-actions buttons partially below the
+     fold on load. We subtract the header, so hero + header fit exactly. */
   height: calc(100svh - 80px);
   min-height: 480px;
   display: flex;
@@ -287,23 +287,24 @@ section { position: relative; }
   letter-spacing: -0.02em;
   font-weight: 800;
   margin-bottom: 1.25rem;
-  /* em, nu ch: „ch” = lățimea cifrei 0 din fontul curent, deci se schimba când
-     Playfair înlocuia fontul de rezervă -> titlul trecea de pe 3 rânduri pe 2
-     (layout shift). 10.56em = 16ch în Playfair Display 800. */
+  /* em, not ch: "ch" = the width of the digit 0 in the current font, so it
+     changed when Playfair replaced the fallback font -> the title shifted
+     from 3 lines to 2 (layout shift). 10.56em = 16ch in Playfair Display 800. */
   max-width: 10.56em;
 }
 .hero-title .word { display: inline-block; }
 .hero-sub {
   font-family: var(--font-ui);
   font-size: 1rem;
-  max-width: 26.5em; /* = 42ch în Inter 400, independent de font (vezi .hero-title) */
+  max-width: 26.5em; /* = 42ch in Inter 400, font-independent (see .hero-title) */
   color: var(--neutral-200);
   margin-bottom: 1.75rem;
 }
 .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
-/* Varianta doar-contur (fundal transparent, text deschis) avea contrast slab
-   pe poza din hero — pe unele zone ale pozei era greu de citit până la hover.
-   Fundal solid, ca butonul principal, rezolvă asta din prima, nu doar la hover. */
+/* The outline-only variant (transparent background, light text) had weak
+   contrast over the hero photo — some areas of the photo were hard to read
+   until hover. A solid background, like the primary button, fixes this
+   right away, not just on hover. */
 .hero-actions .btn-secondary {
   background: var(--ink);
   color: var(--bg);
@@ -328,7 +329,7 @@ section { position: relative; }
   color: var(--ink);
 }
 
-/* ===== Servicii ===== */
+/* ===== Services ===== */
 .services {
   padding-block: 6rem;
   border-bottom: 1px solid var(--ink);
@@ -361,7 +362,7 @@ section { position: relative; }
 .service-card h3 { font-size: 1.4rem; margin-bottom: 0.6rem; }
 .service-card p { font-family: var(--font-ui); font-size: 0.92rem; color: var(--neutral-600); margin-bottom: 0; }
 
-/* ===== Portofoliu ===== */
+/* ===== Portfolio ===== */
 .portfolio {
   padding-block: 6rem;
   border-bottom: 1px solid var(--ink);
@@ -383,7 +384,7 @@ section { position: relative; }
 }
 .portfolio-track {
   display: flex;
-  /* singura mișcare orizontală e asta, declanșată de butoane — nu de scroll */
+  /* this is the only horizontal movement, triggered by the buttons — not by scroll */
   transition: transform 0.5s cubic-bezier(0.65, 0, 0.35, 1);
 }
 .project-panel {
@@ -432,9 +433,9 @@ section { position: relative; }
   display: flex;
   border-top: 1px solid var(--ink);
 }
-/* Structură inspirată din REFERENCE.md (thorsenconstruction.us): overlay
-   întunecat cu numele proiectului la hover pe fiecare poză mică — nu se
-   copiază text/poze/cod de acolo, doar tiparul de interacțiune. */
+/* Structure inspired by REFERENCE.md (thorsenconstruction.us): a dark overlay
+   with the project name on hover over each small photo — no text/photos/code
+   copied from there, just the interaction pattern. */
 .project-thumbs .thumb {
   position: relative;
   width: 25%;
@@ -444,8 +445,9 @@ section { position: relative; }
 .project-thumbs .thumb img {
   display: block;
   width: 100%;
-  /* height:auto — altfel atributul height="320" din HTML bate aspect-ratio
-     și miniaturile ieșeau fâșii de 320px înălțime peste poza principală. */
+  /* height:auto — otherwise the height="320" attribute in the HTML overrides
+     aspect-ratio and the thumbnails came out as 320px-tall strips over the
+     main photo. */
   height: auto;
   aspect-ratio: 1;
   object-fit: cover;
@@ -516,7 +518,7 @@ section { position: relative; }
 }
 .portfolio-progress { gap: 0; }
 .portfolio-progress button {
-  /* țintă tactilă 44×44, bara vizuală rămâne subțire */
+  /* 44×44 tap target, the visual bar stays thin */
   width: 44px; height: 44px;
   padding: 0 8px;
   display: flex; align-items: center;
@@ -533,7 +535,7 @@ section { position: relative; }
 }
 .portfolio-progress button.active::before { background: var(--ink); }
 
-/* ===== Echipă ===== */
+/* ===== Team ===== */
 .team {
   padding-block: 6rem;
   border-bottom: 1px solid var(--ink);
@@ -548,8 +550,9 @@ section { position: relative; }
   .team-grid { grid-template-columns: 5fr 7fr; }
 }
 .team-photo { margin: 0; border: 3px solid var(--ink); }
-/* Fără height:auto, atributul height="554" din HTML ține înălțimea fixă
-   când lățimea scade pe mobil (ex. 337×554) — poza pătrată ieșea turtită. */
+/* Without height:auto, the height="554" attribute in the HTML keeps the height
+   fixed when the width shrinks on mobile (e.g. 337×554) — the square photo came
+   out squashed. */
 .team-photo img { width: 100%; height: auto; }
 .team-photo figcaption {
   font-family: var(--font-mono);
@@ -612,7 +615,7 @@ section { position: relative; }
 @media (min-width: 900px) { .contact-grid { grid-template-columns: 1fr 1fr; } }
 .contact h2 { color: var(--bg); }
 .contact .eyebrow { color: var(--neutral-400); }
-.contact-lede { font-family: var(--font-ui); color: var(--neutral-400); max-width: 27.75em; /* = 44ch în Inter 400 */ }
+.contact-lede { font-family: var(--font-ui); color: var(--neutral-400); max-width: 27.75em; /* = 44ch in Inter 400 */ }
 .contact-details { font-family: var(--font-ui); }
 .contact-details dl {
   display: grid; grid-template-columns: auto 1fr; gap: 0.5rem 1.5rem;
@@ -625,7 +628,7 @@ section { position: relative; }
 .contact-details a { text-decoration: none; border-bottom: 1px solid var(--bg); }
 .contact-details a:hover { color: var(--neutral-200); border-bottom-color: var(--neutral-200); }
 
-/* ===== Modal formular ===== */
+/* ===== Quote form modal ===== */
 .modal-overlay {
   position: fixed; inset: 0;
   background: rgba(17,17,17,0.7);
@@ -674,8 +677,9 @@ section { position: relative; }
   padding: 0.6rem 0.25rem;
   color: var(--ink);
 }
-/* #F0F0F0 pe --bg (#F9F9F7) are contrast ~1.05:1 — practic invizibil. Păstrăm
-   fundalul din DESIGN.md, dar adăugăm outline-ul standard ca indicator real. */
+/* #F0F0F0 on --bg (#F9F9F7) has ~1.05:1 contrast — practically invisible. We
+   keep the background from DESIGN.md, but add the standard outline as a real
+   indicator. */
 .field:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; background: var(--neutral-100); }
 textarea.field { resize: vertical; min-height: 90px; font-family: var(--font-ui); }
 .field-error {
@@ -773,7 +777,7 @@ textarea.field { resize: vertical; min-height: 90px; font-family: var(--font-ui)
   text-align: center;
 }
 
-/* ===== Utilitare mici (înlocuiesc câteva style="" izolate) ===== */
+/* ===== Small utilities (replace a few isolated style="" attributes) ===== */
 .btn-full { width: 100%; }
 .section-title--team { margin-bottom: 2rem; }
 .form-grid--spaced { margin-top: 1.1rem; }

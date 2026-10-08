@@ -1,132 +1,132 @@
-# REFERENCE.md — Analiză site de referință: thorsenconstruction.us
+# REFERENCE.md — Reference site analysis: thorsenconstruction.us
 
-> **Notă de proces:** această analiză s-a făcut **după** ce site-ul Halvorsen & Reyes Builders era deja construit, ca documentare a procesului, **nu** ca bază de pornire. Designul Halvorsen & Reyes vine din `DESIGN.md` (adaptare Newsprint) și din pozele din `Group/`. Documentul de față servește doar ca termen de comparație cu un site real de constructor de case de lux.
+> **Process note:** this analysis was done **after** the Halvorsen & Reyes Builders site was already built, as documentation of the process, **not** as a starting point. The Halvorsen & Reyes design comes from `DESIGN.md` (a Newsprint adaptation) and the photos in `Group/`. This document serves only as a point of comparison with a real luxury home builder's site.
 
 - **URL:** https://thorsenconstruction.us/
-- **Data analizei:** 2026-09-23
-- **Unealta:** Playwright (MCP), Chromium
-- **Viewport-uri:** 1440×900 (desktop) și 375×812 (mobil)
-- **Banner de cookies:** nu a apărut (nu există niciun element de tip cookie/consent în DOM), deci nu a fost nimic de închis.
+- **Analysis date:** 2026-09-23
+- **Tool:** Playwright (MCP), Chromium
+- **Viewports:** 1440×900 (desktop) and 375×812 (mobile)
+- **Cookie banner:** none appeared (no cookie/consent element in the DOM), so there was nothing to dismiss.
 
-## Capturi (`reference-screenshots/`)
+## Screenshots (`reference-screenshots/`)
 
-Am derulat câte un ecran, cu o pauză de 1 s înainte de fiecare captură. Pagina e scurtă, așa că au ieșit 7 capturi de secțiune, sub limita de 10, plus o captură de detaliu la hover.
+I scrolled one screen at a time, with a 1s pause before each capture. The page is short, so there are 7 section captures, under the 10-image cap, plus one hover detail capture.
 
-| Fișier | Conținut |
+| File | Content |
 |---|---|
 | `desktop-1440-01.png` | Header + hero video |
-| `desktop-1440-02.png` | „Our Philosophy” + începutul grilei de proiecte |
-| `desktop-1440-03.png` | Restul grilei, butonul „View all residences”, footer |
-| `desktop-1440-04-hover-card.png` | Card de proiect în starea hover (detaliu, nu secțiune) |
-| `mobile-375-01.png` … `mobile-375-04.png` | Aceleași secțiuni la 375px |
+| `desktop-1440-02.png` | "Our Philosophy" + start of the project grid |
+| `desktop-1440-03.png` | Rest of the grid, the "View all residences" button, footer |
+| `desktop-1440-04-hover-card.png` | A project card in its hover state (a detail shot, not a section) |
+| `mobile-375-01.png` … `mobile-375-04.png` | Same sections at 375px |
 
-Înălțimea paginii: **2643px** la 1440px și **3057px** la 375px.
+Page height: **2643px** at 1440px and **3057px** at 375px.
 
-## Structura secțiunilor
+## Section structure
 
-1. **Header** (`header.banner`, 112px, fundal alb, `position: static`, deci **nu** e sticky)
-   - Logo „THORSEN” (bordo, cu blazon) în stânga și nav-ul PROFILE / RESIDENCES / CONTACT în dreapta.
-   - Pe mobil: logo centrat, iar linkurile sunt stivuite vertical și vizibile tot timpul. Nu există meniu hamburger.
-2. **Hero** (`section.page-header`, 768px pe desktop și 680px pe mobil, fundal negru)
-   - Video Vimeo pe fundal (`?background=1&autoplay=1&loop=1`), full-bleed.
-   - H1 centrat: „YOUR DREAM / OUR PASSION”, cu buton rotund de play dedesubt, care deschide un al doilea video Vimeo cu sunet, în player Plyr.
-   - Text vertical „est. 1976” rotit 90° în colțul din dreapta jos.
-   - Indicator „SCROLL” cu chevron, centrat jos.
+1. **Header** (`header.banner`, 112px, white background, `position: static`, so **not** sticky)
+   - "THORSEN" logo (maroon, with a crest) on the left and the PROFILE / RESIDENCES / CONTACT nav on the right.
+   - On mobile: centered logo, and the links are stacked vertically and always visible. No hamburger menu.
+2. **Hero** (`section.page-header`, 768px on desktop and 680px on mobile, black background)
+   - Background Vimeo video (`?background=1&autoplay=1&loop=1`), full-bleed.
+   - Centered H1: "YOUR DREAM / OUR PASSION", with a round play button below it that opens a second Vimeo video with sound, in a Plyr player.
+   - Vertical "est. 1976" text rotated 90° in the bottom-right corner.
+   - "SCROLL" indicator with a chevron, centered at the bottom.
 3. **Our Philosophy** (`.page-content > .container`)
-   - H2 centrat cu un filet scurt albastru dedesubt (~48px lățime).
-   - Citat („Luxury is anything that feels special” — Aerin Lauder) + 2 paragrafe, într-o coloană îngustă centrată (~900px).
-4. **Grila de proiecte (Residences)**: 4 `article.residence`, câte 2 pe rând (`col-md-6`) și 1 pe rând pe mobil.
-   - Proiecte: Chain Bridge Road (Washington, DC), Collingwood (Alexandria, VA), Country Retreat (Middleburg, VA), Belle Rive (Alexandria, VA).
-   - Poze **color**, raport aproximativ 2:1, fără text în starea normală.
-   - **Hover:** apare un overlay întunecat semi-transparent, cu numele proiectului în majuscule spațiate și locația subliniată cu o linie albastră.
-5. **CTA:** buton outline „VIEW ALL RESIDENCES”, centrat.
-6. **Footer** (58px, minimal): logo gri în stânga, iconiță Instagram la centru și credit „BECCA” (agenția) în dreapta.
+   - Centered H2 with a short blue rule underneath (~48px wide).
+   - A quote ("Luxury is anything that feels special" — Aerin Lauder) + 2 paragraphs, in a narrow centered column (~900px).
+4. **Project grid (Residences)**: 4 `article.residence`, 2 per row (`col-md-6`) and 1 per row on mobile.
+   - Projects: Chain Bridge Road (Washington, DC), Collingwood (Alexandria, VA), Country Retreat (Middleburg, VA), Belle Rive (Alexandria, VA).
+   - **Color** photos, roughly 2:1 ratio, no text in the normal state.
+   - **Hover:** a semi-transparent dark overlay appears, with the project name in spaced-out capitals and the location underlined with a blue line.
+5. **CTA:** outline "VIEW ALL RESIDENCES" button, centered.
+6. **Footer** (58px, minimal): gray logo on the left, Instagram icon in the center, and a "BECCA" (the agency) credit on the right.
 
-Site-ul are puține secțiuni: nu are servicii, echipă, testimoniale sau formular pe homepage. Contactul e pe o pagină separată.
+The site has few sections: no services, team, testimonials, or form on the homepage. Contact is on a separate page.
 
-## Fonturi
+## Fonts
 
-| Rol | Font | Detalii |
+| Role | Font | Details |
 |---|---|---|
-| Tot site-ul | **Cormorant** (serif, self-hosted woff2, greutăți 300/400/400 italic/700) | Un singur font pentru titluri, body, nav și butoane |
-| Fallback declarat | `sans-serif` | Probabil o scăpare, fiindcă un serif are fallback `sans-serif` |
+| Entire site | **Cormorant** (serif, self-hosted woff2, weights 300/400/400 italic/700) | A single font for headings, body, nav, and buttons |
+| Declared fallback | `sans-serif` | Likely an oversight, since a serif's fallback would normally be `sans-serif` only as a last resort |
 
-Scala tipografică (desktop → mobil):
+Type scale (desktop → mobile):
 
-| Element | Mărime | Greutate | Letter-spacing | Transform |
+| Element | Size | Weight | Letter-spacing | Transform |
 |---|---|---|---|---|
 | H1 hero | 35.2px → 25.8px | 500 | 10.56px (0.3em) | uppercase |
-| H2 secțiune | 31.7px → 24.5px | 500 | 9.5px (0.3em) | uppercase |
-| Nav / linkuri | 16px | 400 | 4.8px (0.3em) | uppercase |
-| Buton | 17.6px | 400 | 5.28px (0.3em) | uppercase |
+| H2 section | 31.7px → 24.5px | 500 | 9.5px (0.3em) | uppercase |
+| Nav / links | 16px | 400 | 4.8px (0.3em) | uppercase |
+| Button | 17.6px | 400 | 5.28px (0.3em) | uppercase |
 | Body | 17.6px (1.1rem), line-height 1.5 | 400 | normal | none |
 
-Semnătura vizuală a site-ului e **tracking-ul foarte larg (0.3em) pe tot ce e majuscule**, combinat cu un serif clasic subțire. Titlurile sunt surprinzător de mici. Eleganța vine din spațiere, nu din mărimea literelor.
+The site's visual signature is **very wide tracking (0.3em) on everything in caps**, paired with a thin classic serif. The headings are surprisingly small. The elegance comes from spacing, not letter size.
 
-## Paletă
+## Palette
 
-| Rol | Culoare | Unde |
+| Role | Color | Where |
 |---|---|---|
-| Fundal | `#FFFFFF` | Pagină, header |
-| Text principal | `#212529` | Titluri, body (default Bootstrap) |
-| Text secundar | `#4A5464` | Texte gri-albăstrui |
-| Accent | `#3990C3` (`--bs-primary`) | Filet sub H2, buton outline, sublinierea locației, link „BECCA” |
-| Accent hover | `#00B2FF` | Stări hover ale linkurilor |
-| Brand | bordo (~`#7A1F3D`, în logo-ul imagine) | Doar în logo |
-| Hero | `#000000` + video | Fundalul hero-ului |
-| Overlay | `rgba(0,0,0,0.55)` | Hover pe cardurile de proiect |
+| Background | `#FFFFFF` | Page, header |
+| Primary text | `#212529` | Headings, body (Bootstrap default) |
+| Secondary text | `#4A5464` | Blue-gray text |
+| Accent | `#3990C3` (`--bs-primary`) | Rule under H2, outline button, location underline, "BECCA" link |
+| Accent hover | `#00B2FF` | Link hover states |
+| Brand | maroon (~`#7A1F3D`, in the logo image) | Logo only |
+| Hero | `#000000` + video | Hero background |
+| Overlay | `rgba(0,0,0,0.55)` | Hover on project cards |
 
-Paleta e aproape monocromă (alb, negru și gri-cărbune), cu un singur accent albastru rece. Poza/videoul duce toată culoarea.
+The palette is nearly monochrome (white, black, and charcoal gray), with a single cool blue accent. The photos/video carry all the color.
 
-## Spațiere și grid
+## Spacing and grid
 
 - **Framework:** Bootstrap 5 (`.container`, `.row`, `col-md-6`, `--bs-gutter-x: 1.5rem`).
-- **Container:** practic full-width (~1425px la 1440), cu padding lateral de doar 12px. Grila de poze ajunge aproape de marginile ecranului.
-- **Ritm vertical:** `margin: 96px 0` între blocurile `.layout-section`. Secțiunea Philosophy are aproximativ 150px de aer deasupra titlului.
-- **Gutter între carduri:** ~24px orizontal și ~40px vertical.
-- **Buton:** `padding: 15px 20px`, bordură 2.67px, **`border-radius: 0`** (colțuri drepte, ca la noi).
-- Textul din Philosophy e limitat la aproximativ 900px lățime pentru lizibilitate. Contrastează cu pozele aproape full-bleed.
+- **Container:** practically full-width (~1425px at 1440), with only 12px of side padding. The photo grid reaches almost to the screen edges.
+- **Vertical rhythm:** `margin: 96px 0` between `.layout-section` blocks. The Philosophy section has roughly 150px of breathing room above the heading.
+- **Gutter between cards:** ~24px horizontal and ~40px vertical.
+- **Button:** `padding: 15px 20px`, 2.67px border, **`border-radius: 0`** (square corners, same as ours).
+- The Philosophy text is capped at roughly 900px wide for readability. It contrasts with the nearly full-bleed photos.
 
-## Biblioteci de animație și scripturi
+## Animation libraries and scripts
 
-Verificate în `window` și în bundle-ul `app-Hy05wa7x.js` (~170 KB):
+Checked in `window` and in the `app-Hy05wa7x.js` bundle (~170 KB):
 
-| Verificare | Rezultat |
+| Check | Result |
 |---|---|
-| `window.gsap` / ScrollTrigger | **Absent** (niciun string „gsap” în bundle) |
-| Lenis (`window.Lenis`, clasa `lenis` pe `<html>`) | **Absent** |
-| Locomotive Scroll, AOS, anime.js, Barba, Swiper, Splide, Three.js | **Absente** |
+| `window.gsap` / ScrollTrigger | **Absent** (no "gsap" string in the bundle) |
+| Lenis (`window.Lenis`, `lenis` class on `<html>`) | **Absent** |
+| Locomotive Scroll, AOS, anime.js, Barba, Swiper, Splide, Three.js | **Absent** |
 | jQuery | **Absent** |
-| `IntersectionObserver` în bundle | **Absent** |
+| `IntersectionObserver` in the bundle | **Absent** |
 
-Scripturile încărcate efectiv:
+Scripts actually loaded:
 
-- `app-Hy05wa7x.js`: bundle Vite al temei WordPress (stack Roots Bedrock/Sage: `/wp/`, `/app/themes/thorsen/`). Conține Bootstrap JS, Font Awesome (SVG) și **Plyr** (player video).
-- `player.vimeo.com/api/player.js`: controlul videoului din hero.
-- Google Analytics (`analytics.js` + `gtag`, UA și GA4).
-- `wp-emoji-release.min.js` (default WordPress) și speculation rules pentru prefetch.
-- CSS: Bootstrap 5 compilat + Plyr, fără Tailwind. Singurele `@keyframes` sunt cele din Bootstrap și Plyr (spinner, progress, `plyr-fade-in`).
+- `app-Hy05wa7x.js`: the WordPress theme's Vite bundle (Roots Bedrock/Sage stack: `/wp/`, `/app/themes/thorsen/`). Contains Bootstrap JS, Font Awesome (SVG), and **Plyr** (video player).
+- `player.vimeo.com/api/player.js`: controls the hero video.
+- Google Analytics (`analytics.js` + `gtag`, UA and GA4).
+- `wp-emoji-release.min.js` (WordPress default) and speculation rules for prefetching.
+- CSS: compiled Bootstrap 5 + Plyr, no Tailwind. The only `@keyframes` are the ones from Bootstrap and Plyr (spinner, progress, `plyr-fade-in`).
 
-## Efecte la scroll
+## Scroll effects
 
-**Niciunul.** Am comparat `opacity`, `transform`, `position` și `background-position` pentru ~1500 de elemente înainte și după derularea completă a paginii, iar diferențele au fost **zero**. Nu există reveal-uri, parallax, header sticky sau smooth scroll. Scroll-ul este cel nativ al browserului.
+**None.** I compared `opacity`, `transform`, `position`, and `background-position` for ~1500 elements before and after scrolling through the entire page, and the differences were **zero**. There are no reveals, no parallax, no sticky header, no smooth scroll. Scrolling is the browser's native scroll.
 
-Mișcarea din pagină vine doar din:
-- **videoul de fundal din hero**, care rulează în buclă;
-- **hover-ul pe carduri**, cu overlay întunecat și titlu (tranziții CSS, `transition: all`);
-- tranzițiile CSS standard Bootstrap pe butoane și linkuri (0.15s ease-in-out).
+The only motion on the page comes from:
+- the **hero's background video**, playing on loop;
+- **card hover**, with a dark overlay and title (CSS transitions, `transition: all`);
+- standard Bootstrap CSS transitions on buttons and links (0.15s ease-in-out).
 
-## Comparație cu Halvorsen & Reyes (doar observații, fără cod)
+## Comparison with Halvorsen & Reyes (observations only, no code)
 
 | Aspect | Thorsen | Halvorsen & Reyes |
 |---|---|---|
-| Stack | WordPress + Bootstrap + Vite | HTML/CSS/JS vanilla, fără build |
-| Fonturi | Un singur serif (Cormorant), tracking 0.3em | Playfair Display + Lora + JetBrains Mono |
-| Paletă | Alb/cărbune + albastru rece | Negru/alb + roșu editorial |
-| Colțuri | Drepte (0 radius) | Drepte (0 radius) |
-| Poze portofoliu | Color, grilă 2×2 statică, overlay la hover | Color, carusel cu săgeți |
-| Hero | Video Vimeo full-bleed | Hero cu efect shrink (GSAP ScrollTrigger) |
-| Animații scroll | Niciuna | GSAP + ScrollTrigger, cu `prefers-reduced-motion` |
-| Header | Static, nav vizibil și pe mobil | Vezi `index.html` |
+| Stack | WordPress + Bootstrap + Vite | Vanilla HTML/CSS/JS, no build |
+| Fonts | A single serif (Cormorant), 0.3em tracking | Playfair Display + Lora + JetBrains Mono |
+| Palette | White/charcoal + cool blue | Black/white + editorial red |
+| Corners | Square (0 radius) | Square (0 radius) |
+| Portfolio photos | Color, static 2×2 grid, hover overlay | Color, arrow-driven carousel |
+| Hero | Full-bleed Vimeo video | Hero with a shrink effect (GSAP ScrollTrigger) |
+| Scroll animations | None | GSAP + ScrollTrigger, respecting `prefers-reduced-motion` |
+| Header | Static, nav visible on mobile too | See `index.html` |
 
-Concluzie: Thorsen mizează pe un aer „liniștit” de lux, cu fotografie și video mari, tipografie mică foarte spațiată și zero animații de scroll. Halvorsen & Reyes a ales o direcție editorială mai expresivă, cu mișcare controlată. Cele două abordări se întâlnesc la colțurile drepte și la pozele color lăsate să domine.
+Conclusion: Thorsen leans on a "quiet" luxury feel, with large photography and video, small and heavily spaced type, and zero scroll animations. Halvorsen & Reyes chose a more expressive editorial direction, with controlled motion. The two approaches meet at the square corners and at letting color photography dominate.

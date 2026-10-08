@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ro">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,7 +14,7 @@
 <header class="site-header">
   <div class="container">
     <a href="index.html" class="logo">Halvorsen <span>&amp;</span> Reyes <span>Builders</span></a>
-    <span class="eyebrow" style="margin-left:auto;">Panou admin</span>
+    <span class="eyebrow" style="margin-left:auto;">Admin panel</span>
   </div>
 </header>
 
@@ -22,17 +22,17 @@
 
   <section id="loginView" class="admin-card">
     <h1 class="section-title" style="font-size:1.8rem;">Login</h1>
-    <p class="section-lede">Doar pentru Erik și Camila. Contul se creează din Supabase, nu de aici.</p>
+    <p class="section-lede">For Erik and Camila only. The account is created in Supabase, not here.</p>
     <form id="loginForm" novalidate>
       <div class="field-group">
         <label for="a-email">Email</label>
         <input class="field" type="email" id="a-email" name="email" required autocomplete="username">
       </div>
       <div class="field-group" style="margin-top:1.1rem;">
-        <label for="a-parola">Parolă</label>
+        <label for="a-parola">Password</label>
         <input class="field" type="password" id="a-parola" name="parola" required autocomplete="current-password">
       </div>
-      <button type="submit" class="btn btn-primary" style="margin-top:1.5rem;">Intră în cont</button>
+      <button type="submit" class="btn btn-primary" style="margin-top:1.5rem;">Sign in</button>
       <p class="form-status" id="loginStatus" role="status" aria-live="polite"></p>
     </form>
   </section>
@@ -40,22 +40,22 @@
   <section id="leadsView" class="admin-card" style="display:none;">
     <div class="admin-head">
       <div>
-        <h1 class="section-title" style="font-size:1.8rem; margin-bottom:0.25rem;">Cereri de ofertă</h1>
+        <h1 class="section-title" style="font-size:1.8rem; margin-bottom:0.25rem;">Quote requests</h1>
         <p class="eyebrow" id="loggedInAs"></p>
       </div>
-      <button class="btn btn-secondary" id="logoutBtn">Ieși din cont</button>
+      <button class="btn btn-secondary" id="logoutBtn">Sign out</button>
     </div>
     <p class="form-status" id="leadsStatus" role="status" aria-live="polite"></p>
     <div class="admin-table-wrap">
       <table class="admin-table" id="leadsTable">
         <thead>
           <tr>
-            <th>Data</th>
-            <th>Nume</th>
+            <th>Date</th>
+            <th>Name</th>
             <th>Contact</th>
-            <th>Tip proiect</th>
-            <th>Buget</th>
-            <th>Mesaj</th>
+            <th>Project type</th>
+            <th>Budget</th>
+            <th>Message</th>
           </tr>
         </thead>
         <tbody id="leadsBody"></tbody>

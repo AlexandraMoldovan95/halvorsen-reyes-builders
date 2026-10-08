@@ -1,117 +1,116 @@
-# Setup Supabase — pași manuali (o singură dată)
+# Supabase setup — manual steps (one time)
 
-Site-ul și codul sunt gata. Astea sunt singurele lucruri pe care trebuie să le faci tu, prin cont, ca site-ul să prindă viață. Durează ~15 minute.
+The site and the code are ready. These are the only things you need to do yourself, through your account, to bring the site to life. Takes ~15 minutes.
 
-## 1. Creează proiectul Supabase
+## 1. Create the Supabase project
 
-1. Mergi pe [supabase.com](https://supabase.com) → **New project**.
-2. Nume: `halvorsen-reyes-builders` (sau ce vrei tu). Alege o parolă pentru DB și o regiune apropiată (ex. US West).
-3. Așteaptă ~2 minute să se creeze proiectul.
+1. Go to [supabase.com](https://supabase.com) → **New project**.
+2. Name: `halvorsen-reyes-builders` (or whatever you like). Choose a DB password and a region close to you (e.g. US West).
+3. Wait ~2 minutes for the project to be created.
 
-## 2. Rulează schema SQL
+## 2. Run the SQL schema
 
-1. În dashboard-ul proiectului → **SQL Editor** → **New query**.
-2. Copiază tot conținutul din `supabase/schema.sql` (din acest folder) și rulează-l (**Run**).
-3. Verifică în **Table Editor** că a apărut tabelul `leads` și că are RLS pornit (scrie "RLS enabled" lângă numele tabelului).
+1. In the project dashboard → **SQL Editor** → **New query**.
+2. Copy the entire contents of `supabase/schema.sql` (from this folder) and run it (**Run**).
+3. Check in **Table Editor** that the `leads` table showed up and has RLS on ("RLS enabled" appears next to the table name).
 
-## 3. Ia URL-ul și cheia anon
+## 3. Grab the URL and the anon key
 
-1. **Project Settings** (iconița de rotiță) → **API**.
-2. Copiază **Project URL** și cheia **anon public**.
-3. Deschide `config.js` din acest folder și înlocuiește:
+1. **Project Settings** (gear icon) → **API**.
+2. Copy the **Project URL** and the **anon public** key.
+3. Open `config.js` in this folder and replace:
    ```js
-   SUPABASE_URL: "https://TODO-proiectul-tau.supabase.co",
-   SUPABASE_ANON_KEY: "TODO-anon-key-din-Supabase-Project-Settings-API"
+   SUPABASE_URL: "https://TODO-your-project.supabase.co",
+   SUPABASE_ANON_KEY: "TODO-anon-key-from-Supabase-Project-Settings-API"
    ```
-   cu valorile tale reale.
+   with your real values.
 
-## 4. Deploy Edge Function-ul pentru chatbot
+## 4. Deploy the chatbot Edge Function
 
-**Varianta simplă (din dashboard, fără CLI):**
-1. În dashboard → **Edge Functions** → **Deploy a new function** → nume: `chat`.
-2. Șterge codul exemplu și lipește tot conținutul din `supabase/functions/chat/index.ts`.
+**Easy route (from the dashboard, no CLI):**
+1. In the dashboard → **Edge Functions** → **Deploy a new function** → name: `chat`.
+2. Delete the example code and paste in the entire contents of `supabase/functions/chat/index.ts`.
 3. Deploy.
 
-**Varianta CLI (dacă preferi terminal):**
+**CLI route (if you prefer the terminal):**
 ```bash
 npm install -g supabase
 supabase login
-supabase link --project-ref <project-ref-din-URL>
+supabase link --project-ref <project-ref-from-the-URL>
 supabase functions deploy chat
 ```
 
-## 5. Pune cheia Anthropic ca secret (NICIODATĂ în cod)
+## 5. Set the Anthropic key as a secret (NEVER in code)
 
-1. **Project Settings** → **Edge Functions** → **Secrets** (sau **Manage secrets**).
-2. Adaugă:
-   - `ANTHROPIC_API_KEY` = cheia ta de pe [platform.claude.com](https://platform.claude.com) (Console, nu abonamentul Claude Max — sunt lucruri separate).
-   - Opțional, `ANTHROPIC_MODEL` = numele exact al celui mai recent model Haiku, dacă cel implicit din cod (`claude-haiku-4-5-20251001`) nu mai există — verifică la [platform.claude.com/docs](https://platform.claude.com/docs).
+1. **Project Settings** → **Edge Functions** → **Secrets** (or **Manage secrets**).
+2. Add:
+   - `ANTHROPIC_API_KEY` = your key from [platform.claude.com](https://platform.claude.com) (the Console, not a Claude Max subscription — those are separate).
+   - Optionally, `ANTHROPIC_MODEL` = the exact name of the latest Haiku model, if the default in the code (`claude-haiku-4-5-20251001`) no longer exists — check [platform.claude.com/docs](https://platform.claude.com/docs).
 
-Dacă ai deployat prin CLI, poți seta secretele și așa:
+If you deployed via the CLI, you can also set secrets this way:
 ```bash
 supabase secrets set ANTHROPIC_API_KEY=sk-ant-...
 ```
 
-3. După deploy-ul pe Netlify (pasul 9), adaugă și:
-   - `ALLOWED_ORIGINS` = URL-ul site-ului, fără `/` la final, ex. `https://site-ul-tau.netlify.app`. Poți pune mai multe, separate prin virgulă (ex. și `http://localhost:5500` pentru test local). Cât timp nu e setat, CORS rămâne deschis (`*`).
-4. Opțional: o **limită lunară de cheltuieli** în Anthropic Console (Settings → Limits). Protecția de cost din cod e la pasul 10 (limite de folosire).
+3. After deploying to Netlify (step 9), also add:
+   - `ALLOWED_ORIGINS` = the site's URL, no trailing `/`, e.g. `https://your-site.netlify.app`. You can list several, comma-separated (e.g. also `http://localhost:5500` for local testing). As long as it's not set, CORS stays open (`*`).
+4. Optional: a **monthly spending limit** in the Anthropic Console (Settings → Limits). The in-code cost protection is covered in step 10 (rate limits).
 
-## 6. Testează local, înainte de deploy pe Netlify
+## 6. Test locally, before deploying to Netlify
 
-1. Deschide `index.html` direct în browser (sau cu un mic server local, ex. `npx serve .`).
-2. Testează formularul — ar trebui să apară un rând nou în tabelul `leads` din Supabase.
-3. Testează chatbot-ul — pune întrebările din testul de acceptanță:
-   - "Cine sunt proprietarii?" → ar trebui să răspundă Erik Halvorsen și Camila Reyes.
-   - "Cât costă o casă de 150 mp?" → nu trebuie să inventeze un preț, ci să trimită spre formular.
-   - "Scrie-mi o poezie" → trebuie să refuze politicos.
+1. Open `index.html` directly in a browser (or with a small local server, e.g. `npx serve .`).
+2. Test the form — a new row should appear in the `leads` table in Supabase.
+3. Test the chatbot — try the questions from the acceptance test:
+   - "Who are the owners?" → should answer Erik Halvorsen and Camila Reyes.
+   - "How much does a 1,600 sq ft home cost?" → must not make up a price, should point to the form instead.
+   - "Write me a poem" → must politely decline.
 
-## 7. Verificare de securitate (obligatorie, e în testul de acceptanță)
+## 7. Security check (required, it's in the acceptance test)
 
-Cu cheia `anon`, un `SELECT` pe `leads` trebuie să întoarcă 0 rânduri. Testează în SQL Editor cu rol `anon`, sau simplu din browser console pe site-ul live:
+With the `anon` key, a `SELECT` on `leads` must return 0 rows. Test it in the SQL Editor with the `anon` role, or simply from the browser console on the live site:
 ```js
 fetch(window.HR_CONFIG.SUPABASE_URL + "/rest/v1/leads", {
   headers: { apikey: window.HR_CONFIG.SUPABASE_ANON_KEY, Authorization: "Bearer " + window.HR_CONFIG.SUPABASE_ANON_KEY }
 }).then(r => r.json()).then(console.log);
 ```
-Ar trebui să întoarcă `[]` (array gol), niciodată datele reale.
+Should return `[]` (empty array), never the real data.
 
-## 8. Panou admin pentru Erik & Camila (opțional, în afara temei)
+## 8. Admin panel for Erik & Camila (optional, outside the brief)
 
-`admin.html` e o pagină separată (nelistată în navigație, `noindex`) unde Erik și Camila se pot loga și vedea cererile trimise prin formular. Nu e cerută de tema stepIT, dar ține de aceeași bază Supabase, deci se configurează tot aici.
+`admin.html` is a separate page (not listed in navigation, `noindex`) where Erik and Camila can log in and see the requests submitted through the form. It's not required by the stepIT brief, but it uses the same Supabase backend, so it's configured here too.
 
-1. **Creează conturile lor**: dashboard → **Authentication** → **Users** → **Add user** → **Create new user**. Faci asta o dată pentru Erik și o dată pentru Camila, cu emailul și o parolă (le poți schimba parola ei/el mai târziu din "Forgot password" pe pagina de login, dacă activezi email-uri — altfel le dai tu parola inițială).
-2. **Adaugă-i în tabelul `admins`**: în `supabase/schema.sql` ai deja un `insert into public.admins` cu emailuri placeholder (`erik@hr-builders.example`, `camila@hr-builders.example`). Deschide **SQL Editor** și rulează din nou acel bloc, dar cu emailurile **reale**, exact cum le-ai pus la pasul 1:
+1. **Create their accounts**: dashboard → **Authentication** → **Users** → **Add user** → **Create new user**. Do this once for Erik and once for Camila, with their email and a password (they can change their own password later via "Forgot password" on the login page, if you enable emails — otherwise you give them the initial password yourself).
+2. **Add them to the `admins` table**: `supabase/schema.sql` already has an `insert into public.admins` with placeholder emails (`erik@hr-builders.example`, `camila@hr-builders.example`). Open the **SQL Editor** and run that block again, but with the **real** emails, exactly as you entered them in step 1:
    ```sql
    insert into public.admins (email) values
-     ('email-real-erik@...'),
-     ('email-real-camila@...')
+     ('erik-real-email@...'),
+     ('camila-real-email@...')
    on conflict (email) do nothing;
    ```
-3. **Important — securitate**: oricine se poate loga cu emailul lui în `admins` va vedea toate cererile din `leads` (politica RLS verifică exact acest lucru). Deci:
-   - Nu adăuga alte emailuri în `admins` decât ale lor doi.
-   - Mergi la **Authentication** → **Providers** → **Email** și dezactivează **"Allow new users to sign up"** (sau echivalentul din UI-ul curent). Așa nimeni nu-și poate crea singur un cont din formularul de login — chiar dacă ar reuși, tot n-ar vedea nimic fără să fie și în `admins` (dublă protecție), dar mai bine închizi și ușa din față.
-4. **Testează**: deschide `admin.html` din acest folder în browser, loghează-te cu unul din conturi. Ar trebui să vezi tabelul cu cererile trimise. Dacă te loghezi cu un cont care nu e în `admins`, primești eroare la încărcarea listei (RLS a refuzat SELECT-ul) — e comportamentul corect, nu un bug.
+3. **Important — security**: anyone who can log in with an email that's in `admins` will see every request in `leads` (the RLS policy checks exactly that). So:
+   - Don't add any emails to `admins` other than theirs.
+   - Go to **Authentication** → **Providers** → **Email** and turn off **"Allow new users to sign up"** (or the equivalent in the current UI). That way nobody can create their own account from the login form — even if they somehow did, they still wouldn't see anything without also being in `admins` (double protection), but it's better to close the front door too.
+4. **Test it**: open `admin.html` from this folder in a browser, log in with one of the accounts. You should see the table of submitted requests. If you log in with an account that's not in `admins`, you'll get an error loading the list (RLS rejected the SELECT) — that's the correct behavior, not a bug.
 
-## 9. Deploy pe Netlify
+## 9. Deploy to Netlify
 
-Drag-and-drop folderul întreg (fără `supabase/`, acela rămâne doar la tine — nu se publică, dar nu strică nici dacă rămâne, nu conține secrete) pe [app.netlify.com/drop](https://app.netlify.com/drop), sau conectează folderul ca site nou din contul tău Netlify existent. `admin.html` se publică odată cu restul site-ului static — fiind `noindex` și nelinkuit din meniu, nu apare pentru vizitatori obișnuiți, dar reține că URL-ul lui (`tau-site.netlify.app/admin.html`) nu e "secret", doar neafișat; protecția reală e login-ul + RLS, nu ascunderea URL-ului.
+Drag-and-drop the whole folder (except `supabase/`, which stays local only — it's never published, though it wouldn't hurt anything if it was, since it contains no secrets) onto [app.netlify.com/drop](https://app.netlify.com/drop), or connect the folder as a new site from your existing Netlify account. `admin.html` gets published along with the rest of the static site — being `noindex` and not linked from the menu, it won't show up for regular visitors, but keep in mind its URL (`your-site.netlify.app/admin.html`) isn't "secret," just unlisted; the real protection is the login + RLS, not hiding the URL.
 
-## 10. Limite de folosire (chatbot + formular)
+## 10. Rate limits (chatbot + form)
 
-Funcția `chat` și formularul pot fi apelate de oricine are cheia publică din site. Limitele de aici opresc abuzul **înainte** de orice apel plătit către Anthropic.
+The `chat` function and the form can be called by anyone who has the public key from the site. The limits here stop abuse **before** any paid call to Anthropic.
 
-**Ce se limitează:**
-- **Chatbot:** maximum **20 de mesaje pe oră de la același vizitator** și **300 de mesaje pe zi în total**. Peste limită, chatbot-ul răspunde politicos că e pe pauză și trimite spre formular, fără să mai apeleze Anthropic. Vizitatorul e recunoscut după o amprentă (hash) a IP-ului; IP-ul nu se salvează, iar amprentele se șterg după 2 zile.
-- **Formular:** maximum **30 de cereri pe oră în total** și **3 pe zi de pe același email**.
+**What's limited:**
+- **Chatbot:** max **20 messages per hour from the same visitor** and **300 messages per day total**. Over the limit, the chatbot politely replies that it's paused and points to the form, without calling Anthropic at all. The visitor is recognized by a fingerprint (hash) of their IP; the IP itself is never saved, and fingerprints are deleted after 2 days.
+- **Form:** max **30 requests per hour total** and **3 per day from the same email**.
 
-**Cum le pornești:**
-1. **SQL Editor** → **New query** → lipește tot `supabase/rate_limits.sql` → **Run**. Re-rularea e sigură; nu atinge datele din `leads`.
-2. **Edge Functions** → `chat` → înlocuiește codul cu `supabase/functions/chat/index.ts` din acest folder → **Deploy**. (Sau din CLI: `supabase functions deploy chat`.)
-3. Nu trebuie niciun secret nou: `SUPABASE_URL` și `SUPABASE_SERVICE_ROLE_KEY` sunt puse automat de Supabase în Edge Functions.
+**How to turn them on:**
+1. **SQL Editor** → **New query** → paste in all of `supabase/rate_limits.sql` → **Run**. Re-running is safe; it doesn't touch the data in `leads`.
+2. **Edge Functions** → `chat` → replace the code with `supabase/functions/chat/index.ts` from this folder → **Deploy**. (Or from the CLI: `supabase functions deploy chat`.)
+3. No new secret is needed: `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are set automatically by Supabase in Edge Functions.
 
-**Ordinea contează:** rulează întâi SQL-ul. Dacă funcția nou deployată nu găsește `chat_allow` în baza de date, refuză mesajele (răspunde cu mesajul de pauză), ca să nu rămână fără protecție de cost.
+**Order matters:** run the SQL first. If the newly deployed function can't find `chat_allow` in the database, it declines messages (replies with the pause message), so it's never left without cost protection.
 
-**Ca să schimbi limitele fără cod:** adaugă în **Edge Functions → Secrets** `CHAT_LIMIT_PER_HOUR` și/sau `CHAT_LIMIT_PER_DAY`. Pentru un test rapid, pune `CHAT_LIMIT_PER_HOUR=2`: al 3-lea mesaj din chat trebuie să primească mesajul de pauză. **Șterge secretul după test.**
+**To change the limits without touching code:** add `CHAT_LIMIT_PER_HOUR` and/or `CHAT_LIMIT_PER_DAY` under **Edge Functions → Secrets**. For a quick test, set `CHAT_LIMIT_PER_HOUR=2`: the 3rd chat message should get the pause reply. **Delete the secret after testing.**
 
-**Nu schimbă nimic în site** (fără deploy pe Netlify): mesajul de pauză vine ca un răspuns normal de chat.
-
+**Changes nothing on the site itself** (no Netlify deploy needed): the pause message comes back as a normal chat reply.

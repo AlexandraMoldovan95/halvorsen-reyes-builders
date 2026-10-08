@@ -4,7 +4,7 @@
   var CFG = window.HR_CONFIG || {};
   var prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* ===================== NAV MOBIL ===================== */
+  /* ===================== MOBILE NAV ===================== */
   var navToggle = document.getElementById("navToggle");
   var mobileNav = document.getElementById("mobileNav");
   function closeMobileNav() {
@@ -25,13 +25,13 @@
     });
   }
 
-  /* ===================== HERO: split cuvinte + shrink la scroll ===================== */
+  /* ===================== HERO: word split + shrink on scroll ===================== */
   var heroTitle = document.getElementById("heroTitle");
   if (heroTitle) {
     var words = heroTitle.textContent.trim().split(/\s+/);
-    // Spațiul trebuie să fie un nod de text ÎNTRE span-uri (join(" ")), nu în interiorul
-    // fiecărui span — altfel, cu span-urile pe inline-block, cuvintele apar lipite.
-    // Construit cu noduri DOM, nu innerHTML — textul nu e niciodată re-interpretat ca HTML.
+    // The space has to be a text node BETWEEN spans (join(" ")), not inside each
+    // span — otherwise, with the spans as inline-block, the words end up glued together.
+    // Built with DOM nodes, not innerHTML — the text is never re-interpreted as HTML.
     heroTitle.textContent = "";
     words.forEach(function (w, i) {
       if (i > 0) heroTitle.appendChild(document.createTextNode(" "));
@@ -73,8 +73,8 @@
         gsap.set(heroMedia, { transformOrigin: "center top" });
       }
 
-      // Portofoliu: reveal la scroll (fade + slide-up), fără pin — pagina rămâne
-      // scroll vertical liber tot timpul, nu se "agață" de secțiune.
+      // Portfolio: reveal on scroll (fade + slide-up), no pin — the page stays
+      // freely vertical-scrolling at all times, never "sticks" to the section.
       var portfolioSection = document.querySelector("#portofoliu");
       if (portfolioSection) {
         var portfolioReveal = portfolioSection.querySelectorAll(
@@ -96,8 +96,8 @@
           });
         }
 
-        // Parallax ușor pe pozele proiectelor: scale-up ca buffer, ca să nu apară
-        // goluri la margini când imaginea se deplasează pe scroll (scrub, fără pin).
+        // Light parallax on the project photos: scaled up as a buffer, so no gaps
+        // appear at the edges when the image shifts on scroll (scrub, no pin).
         var portfolioImages = portfolioSection.querySelectorAll(".project-media img.project-hero-img");
         if (portfolioImages.length) {
           gsap.set(portfolioImages, { scale: 1.15, transformOrigin: "center center" });
@@ -116,9 +116,9 @@
     }
   }
 
-  /* ===================== PORTOFOLIU: carusel pe săgeți, scroll doar vertical =====================
-     Fără pin, fără scroll orizontal — pagina defilează normal, vertical. Trecerea
-     între cele 5 proiecte se face explicit, cu butoanele stânga/dreapta sau cu punctele. */
+  /* ===================== PORTFOLIO: arrow-driven carousel, vertical scroll only =====================
+     No pin, no horizontal scroll — the page scrolls normally, vertically. Moving
+     between the 5 projects is explicit, via the left/right buttons or the dots. */
   (function initPortfolioCarousel() {
     var track = document.getElementById("portfolioTrack");
     var prevBtn = document.getElementById("portfolioPrev");
@@ -131,17 +131,17 @@
 
     var announceEl = document.getElementById("portfolioAnnounce");
 
-    /* Pozele din panourile 2–5 au data-src/data-srcset în HTML, ca să nu se
-       descarce la încărcarea paginii (concurau cu poza din hero pe mobil).
-       Le încărcăm când panoul devine curent, plus vecinii lui, ca trecerea
-       între proiecte să nu arate un panou gol. */
+    /* Photos in panels 2-5 have data-src/data-srcset in the HTML, so they don't
+       download on page load (they competed with the hero image on mobile).
+       We load them when a panel becomes current, plus its neighbors, so moving
+       between projects never shows an empty panel. */
     function hydratePanel(i) {
       var panel = panels[i];
       if (!panel || panel.dataset.hydrated) return;
       panel.dataset.hydrated = "1";
       panel.querySelectorAll("img[data-src]").forEach(function (img) {
-        // "eager" înainte de src: panoul vecin e în afara ecranului, iar cu
-        // "lazy" browserul ar amâna descărcarea până la click.
+        // "eager" before src: the neighboring panel is off-screen, and with
+        // "lazy" the browser would defer the download until a click.
         img.loading = "eager";
         if (img.dataset.srcset) img.srcset = img.dataset.srcset;
         img.src = img.dataset.src;
@@ -155,7 +155,7 @@
     function update() {
       hydratePanel(currentIndex);
       hydratePanel(currentIndex - 1);
-      // Vecinul următor abia după "load" — altfel s-ar descărca tot la pornire.
+      // Next neighbor only after "load" — otherwise everything would download at startup.
       if (pageLoaded) hydratePanel(currentIndex + 1);
       track.style.transform = "translateX(-" + currentIndex * 100 + "%)";
       dots.forEach(function (d, i) {
@@ -171,7 +171,7 @@
       if (announceEl) {
         var titleEl = panels[currentIndex] ? panels[currentIndex].querySelector("h3") : null;
         var title = titleEl ? titleEl.textContent : "";
-        announceEl.textContent = "Proiectul " + (currentIndex + 1) + " din " + panels.length + (title ? ": " + title : "");
+        announceEl.textContent = "Project " + (currentIndex + 1) + " of " + panels.length + (title ? ": " + title : "");
       }
     }
 
@@ -196,7 +196,7 @@
     else { window.addEventListener("load", onPageLoaded); }
   })();
 
-  /* ===================== MODAL FORMULAR ===================== */
+  /* ===================== QUOTE FORM MODAL ===================== */
   var overlay = document.getElementById("formOverlay");
   var openTriggers = document.querySelectorAll("[data-open-form]");
   var closeBtn = document.getElementById("formClose");
@@ -240,7 +240,7 @@
     overlay.classList.remove("open");
     document.body.style.overflow = "";
     document.removeEventListener("keydown", trapFocus);
-    // Întoarce focusul pe butonul care a deschis formularul (navigare cu tastatura).
+    // Return focus to the button that opened the form (keyboard navigation).
     if (lastFocused && lastFocused.focus) lastFocused.focus();
   }
   openTriggers.forEach(function (btn) { btn.addEventListener("click", openForm); });
@@ -257,7 +257,7 @@
     closeMobileNav();
   });
 
-  /* ===================== VALIDARE + TRIMITERE FORMULAR ===================== */
+  /* ===================== FORM VALIDATION + SUBMIT ===================== */
   var leadForm = document.getElementById("leadForm");
   var formStatus = document.getElementById("formStatus");
   var submitBtn = document.getElementById("leadSubmit");
@@ -274,12 +274,12 @@
 
   function validateForm(data) {
     var errors = {};
-    if (!data.nume || data.nume.trim().length < 2) errors["f-nume"] = "Introdu numele complet.";
-    if (!data.telefon || data.telefon.replace(/\D/g, "").length < 7) errors["f-telefon"] = "Număr de telefon invalid.";
+    if (!data.nume || data.nume.trim().length < 2) errors["f-nume"] = "Enter your full name.";
+    if (!data.telefon || data.telefon.replace(/\D/g, "").length < 7) errors["f-telefon"] = "Invalid phone number.";
     var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!data.email || !emailRe.test(data.email)) errors["f-email"] = "Adresă de email invalidă.";
-    if (!data.tip_proiect) errors["f-tip"] = "Alege tipul de proiect.";
-    if (!data.mesaj || data.mesaj.trim().length < 10) errors["f-mesaj"] = "Spune-ne câteva cuvinte în plus (min. 10 caractere).";
+    if (!data.email || !emailRe.test(data.email)) errors["f-email"] = "Invalid email address.";
+    if (!data.tip_proiect) errors["f-tip"] = "Choose a project type.";
+    if (!data.mesaj || data.mesaj.trim().length < 10) errors["f-mesaj"] = "Give us a few more words (min. 10 characters).";
     return errors;
   }
 
@@ -296,19 +296,19 @@
 
       if (Object.keys(errors).length > 0) {
         Object.keys(errors).forEach(function (id) { setFieldError(id, errors[id]); });
-        formStatus.textContent = "Verifică datele marcate mai sus.";
+        formStatus.textContent = "Check the fields marked above.";
         formStatus.classList.add("error");
         return;
       }
 
       if (!CFG.SUPABASE_URL || CFG.SUPABASE_URL.indexOf("TODO") !== -1) {
-        formStatus.textContent = "Formularul nu e conectat încă la Supabase (vezi config.js).";
+        formStatus.textContent = "The form isn't connected to Supabase yet (see config.js).";
         formStatus.classList.add("error");
         return;
       }
 
       submitBtn.disabled = true;
-      submitBtn.textContent = "Se trimite...";
+      submitBtn.textContent = "Sending...";
 
       fetch(CFG.SUPABASE_URL + "/rest/v1/leads", {
         method: "POST",
@@ -328,20 +328,20 @@
         }),
       })
         .then(function (res) {
-          if (!res.ok) throw new Error("Eroare server: " + res.status);
+          if (!res.ok) throw new Error("Server error: " + res.status);
           leadForm.reset();
-          formStatus.textContent = "Cererea a fost trimisă. Camila revine în cel mult o zi lucrătoare.";
+          formStatus.textContent = "Your request has been sent. Camila will get back to you within one business day.";
           formStatus.classList.add("success");
           setTimeout(closeForm, 2200);
         })
         .catch(function (err) {
-          formStatus.textContent = "Ceva nu a mers. Încearcă din nou sau sună-ne direct.";
+          formStatus.textContent = "Something went wrong. Try again or call us directly.";
           formStatus.classList.add("error");
           console.error(err);
         })
         .finally(function () {
           submitBtn.disabled = false;
-          submitBtn.textContent = "Trimite cererea";
+          submitBtn.textContent = "Send request";
         });
     });
   }
@@ -381,8 +381,8 @@
     div.textContent = text;
     chatBody.appendChild(div);
     chatBody.scrollTop = chatBody.scrollHeight;
-    // Doar răspunsurile finale ale botului se anunță la screen reader — nu mesajul
-    // propriu al utilizatorului (deja știe ce a scris) și nu indicatorul "Scrie...".
+    // Only the bot's final replies are announced to screen readers — not the
+    // user's own message (they already know what they typed) and not the "Typing..." indicator.
     if (who === "bot" && chatAnnounce) chatAnnounce.textContent = text;
     return div;
   }
@@ -396,11 +396,11 @@
       chatInput.value = "";
 
       if (!CFG.SUPABASE_URL || CFG.SUPABASE_URL.indexOf("TODO") !== -1) {
-        appendMessage("Chat-ul nu e conectat încă la backend (vezi config.js și SUPABASE_SETUP.md).", "bot");
+        appendMessage("Chat isn't connected to the backend yet (see config.js and SUPABASE_SETUP.md).", "bot");
         return;
       }
 
-      var typing = appendMessage("Scrie...", "bot typing");
+      var typing = appendMessage("Typing...", "bot typing");
 
       fetch(CFG.SUPABASE_URL + "/functions/v1/chat", {
         method: "POST",
@@ -412,16 +412,16 @@
         body: JSON.stringify({ message: msg }),
       })
         .then(function (res) {
-          if (!res.ok) throw new Error("Eroare server: " + res.status);
+          if (!res.ok) throw new Error("Server error: " + res.status);
           return res.json();
         })
         .then(function (data) {
           typing.remove();
-          appendMessage(data.reply || "Nu am putut genera un răspuns acum.", "bot");
+          appendMessage(data.reply || "Couldn't generate a reply right now.", "bot");
         })
         .catch(function (err) {
           typing.remove();
-          appendMessage("A apărut o eroare. Încearcă din nou sau folosește formularul de ofertă.", "bot");
+          appendMessage("Something went wrong. Try again or use the quote form.", "bot");
           console.error(err);
         });
     });

@@ -1,118 +1,118 @@
 # Halvorsen & Reyes Builders — site
 
-Site public, one-page, pentru firma fictivă de construcții Halvorsen & Reyes Builders (Denver, CO). Temă „Vibe Coding" — stepIT.
+Public, one-page site for the fictional construction company Halvorsen & Reyes Builders (Denver, CO). "Vibe Coding" theme — stepIT.
 
 **Live:** https://halvorsen-reyes-builders-655f70.netlify.app/
 
-> Codul din acest folder e cu un pas înaintea site-ului live (optimizări de performanță care nu au mai putut fi publicate în producție) — vezi secțiunea [Performanță (Lighthouse)](#performanță-lighthouse).
+> The code in this folder is one step ahead of the live site (performance optimizations that couldn't be published to production yet) — see the [Performance (Lighthouse)](#performance-lighthouse) section.
 
 ## Stack
 
-- **Frontend**: HTML/CSS/JS vanilla (fără framework, fără build step), animații GSAP + ScrollTrigger, hostat static pe **Netlify**.
-- **Backend**: **Supabase** — tabel `leads` (RLS: doar INSERT public) + Edge Function `chat` (Deno) care apelează Anthropic API cu cheia ținută secretă în Supabase. Chatbot-ul și formularul au **limite de folosire** (vezi [mai jos](#limite-de-folosire-adăugate-după-predare)).
-- **Design**: `DESIGN.md` — adaptare a stilului Newsprint (designprompts.dev) pentru un vanilla stack, cu paletă negru/alb + roșu editorial, tipografie Playfair Display + Lora + Inter + JetBrains Mono, găzduite local în `fonts/` (vezi `fonts/README.md`).
-- **Imagini**: WebP, max 1600px lățime pentru pozele mari (proiecte + echipă); miniaturile din portofoliu au variante proprii de 480px (`*-thumb.webp`), generate separat, ca să nu se descarce fișierul de 1600px pentru o poză afișată la ~150px. Toate imaginile de sub primul ecran au `loading="lazy"`. În carusel, pozele proiectelor 2–5 se încarcă abia când ajungi la ele (plus proiectul următor, după încărcarea paginii).
+- **Frontend**: vanilla HTML/CSS/JS (no framework, no build step), GSAP + ScrollTrigger animations, hosted statically on **Netlify**.
+- **Backend**: **Supabase** — `leads` table (RLS: public INSERT only) + `chat` Edge Function (Deno) that calls the Anthropic API with the key kept secret in Supabase. The chatbot and the form have **usage limits** (see [below](#usage-limits-added-after-submission)).
+- **Design**: `DESIGN.md` — an adaptation of the Newsprint style (designprompts.dev) for a vanilla stack, with a black/white + editorial red palette, Playfair Display + Lora + Inter + JetBrains Mono typography, self-hosted in `fonts/` (see `fonts/README.md`).
+- **Images**: WebP, max 1600px width for large photos (projects + team); portfolio thumbnails have their own 480px variants (`*-thumb.webp`), generated separately, so the 1600px file isn't downloaded for a photo shown at ~150px. All below-the-fold images have `loading="lazy"`. In the carousel, photos for projects 2–5 only load once you reach them (plus the next project, after the page loads).
 
-## Structură
+## Structure
 
 ```
-index.html              site-ul (o pagină)
-styles.css               stiluri, token-uri din DESIGN.md
-script.js                nav mobil, animații GSAP, formular, chatbot
-config.js                URL + cheie anon Supabase (completează după setup)
-images/                  poze optimizate (proiecte + echipă)
-fonts/                   fonturile site-ului (subset latin + diacritice), licență OFL
-admin.html, admin.js     panou admin (Erik & Camila) — login + listă cereri, în afara temei
-supabase/schema.sql       tabelul leads + RLS, tabelul admins + RLS pt. panoul admin
-supabase/functions/chat/  Edge Function pentru chatbot (cu limită de mesaje)
-supabase/rate_limits.sql  limite de folosire: chatbot 20/oră/vizitator + 300/zi, formular 30/oră + 3/zi/email
-SUPABASE_SETUP.md         pași manuali de configurare (o singură dată)
-deploy/                   copie DOAR cu fișierele site-ului, pentru Netlify: `netlify deploy --prod --dir deploy`
-CLAUDE.md, DESIGN.md      context și decizii de design pentru Claude Code
+index.html              the site (one page)
+styles.css               styles, tokens from DESIGN.md
+script.js                mobile nav, GSAP animations, form, chatbot
+config.js                Supabase URL + anon key (fill in after setup)
+images/                  optimized photos (projects + team)
+fonts/                   the site's fonts (latin + diacritics subset), OFL license
+admin.html, admin.js     admin panel (Erik & Camila) — login + request list, outside the brief
+supabase/schema.sql       leads table + RLS, admins table + RLS for the admin panel
+supabase/functions/chat/  Edge Function for the chatbot (with a message limit)
+supabase/rate_limits.sql  usage limits: chatbot 20/hour/visitor + 300/day, form 30/hour + 3/day/email
+SUPABASE_SETUP.md         manual setup steps (one time)
+deploy/                   a copy with ONLY the site's files, for Netlify: `netlify deploy --prod --dir deploy`
+CLAUDE.md, DESIGN.md      context and design decisions for Claude Code
 ```
 
-## Setup rapid
+## Quick setup
 
-Vezi `SUPABASE_SETUP.md` — creezi proiectul Supabase, rulezi `schema.sql`, deployezi funcția `chat`, pui cheia Anthropic ca secret, completezi `config.js`, apoi faci deploy pe Netlify.
+See `SUPABASE_SETUP.md` — create the Supabase project, run `schema.sql`, deploy the `chat` function, set the Anthropic key as a secret, fill in `config.js`, then deploy to Netlify.
 
-## Plugin-uri Claude Code folosite
+## Claude Code plugins used
 
-*(completat după pasul de instalare plugin-uri în Claude Code — minim 3 plugin-uri, minim 2 marketplace-uri)*
+*(filled in after the plugin-installation step in Claude Code — at least 3 plugins, at least 2 marketplaces)*
 
-| Plugin | Marketplace | Ce a făcut concret pentru acest site |
+| Plugin | Marketplace | What it concretely did for this site |
 |---|---|---|
-| `frontend-design` | `claude-plugins-official` | Review al `index.html` + `styles.css` față de `DESIGN.md`. A găsit și reparat: focus invizibil pe câmpurile formularului (`#F0F0F0` pe `#F9F9F7`, ~1.05:1) și pe fundalurile negre (hero, contact, header chat); skip link care nu devenea niciodată vizibil; ținte tactile sub 44px (butonul de închidere chat, punctele carusel-ului); `border-radius: 50%` pe avatarul chatbot-ului (contrar regulii „0 peste tot"); greutatea 800 a Playfair Display cerută în CSS, dar neîncărcată din Google Fonts; token `--neutral-400` folosit, dar nedefinit; focusul nereturnat la închiderea formularului. |
-| `security-guidance` | `claude-plugins-official` | Plugin pe bază de hook-uri: verifică automat fiecare fișier editat de Claude după ~25 de pattern-uri periculoase (XSS, secrete hardcodate, deserializare nesigură etc.). Am rulat verificatorul lui de pattern-uri pe tot codul (`config.js`, `script.js`, `admin.js`, `index.html`, `admin.html`, `supabase/schema.sql`, `supabase/functions/chat/index.ts`). **Nu a găsit nicio cheie secretă** în cod. A semnalat 3 lucruri: (1) scripturile GSAP de pe cdnjs fără Subresource Integrity → reparat, am adăugat `integrity` + `crossorigin`; (2) `innerHTML` în `script.js` la titlul din hero → reparat, reconstruit cu noduri DOM; (3) `innerHTML` în `admin.js` → verificat manual, fals pozitiv (toate câmpurile trec prin `escapeHtml`). Review-ul LLM al diff-urilor și cel al commit-urilor au nevoie de un repo git, iar proiectul nu e încă repo git. |
-| `commit-commands` | `claude-plugins-official` | Instalat și disponibil pentru commit-uri locale (`/commit`, `/commit-push-pr`), dar nu a fost folosit încă — proiectul nu e încă repo git. |
-| `impeccable` | `pbakaus/impeccable` (marketplace separat, nu `claude-plugins-official`) | Audit de design/calitate cu `/impeccable audit`: a rulat un detector determinist (61 de reguli) plus verificare directă în browser, la 1440px și 375px, repetat de 5 ori pe măsură ce am reparat ce a găsit. Scor: 14 → 17 → 18 → 19 → **20/20**. A găsit real, în ordine: (1) Tab ieșea din formularul de ofertă către elemente ascunse din fundal; câmp de chat fără `aria-label`; răspunsurile chatbot-ului nu erau anunțate de screen reader; contrast insuficient pe textul din hero; toate imaginile serveau varianta de 1600px inclusiv miniaturile afișate la 54–152px, fără `loading="lazy"`; (2)-(3) probleme mai mici de focus/contrast/dimensiune text rămase după runda 1; drop cap-ul se scurgea peste numele fondatorilor; (4)-(5) poza echipei nedeliniată cu restul secțiunii (`<figure>` fără `margin:0`), săriturile din meniu aterizau sub header-ul fix (fără `scroll-padding-top`), și o problemă de conținut pe care audit-ul a semnalat-o explicit ca decizie a mea, nu bug de cod: legenda pozei numea „Erik & Camila", dar poza stock arată trei bărbați neidentificați — am rescris legenda generic (nu mai promite identități anume) și am corectat separat o distorsiune de lentilă vizibilă în poza stock (`cv2.undistort`, coeficient -0.15, apoi recadrare pentru eliminarea marginilor negre rezultate). Am verificat fiecare semnal manual (contrast real măsurat, nu doar citit din raport) și am aplicat toate reparațiile reale; câteva semnale P3 finale (linie dublă de 1-3px sub header la scroll — `scroll-padding-top` era cu ~1px mai mare decât header-ul real) au fost reparate direct, măsurând înălțimea reală a header-ului cu Playwright în loc să ghicesc valoarea. Verificat cu Playwright după fiecare modificare, nu doar rulat orbește. |
+| `frontend-design` | `claude-plugins-official` | Review of `index.html` + `styles.css` against `DESIGN.md`. Found and fixed: invisible focus on form fields (`#F0F0F0` on `#F9F9F7`, ~1.05:1) and on black backgrounds (hero, contact, chat header); a skip link that never became visible; tap targets under 44px (the chat close button, the carousel dots); `border-radius: 50%` on the chatbot avatar (contrary to the "0 everywhere" rule); Playfair Display weight 800 required in CSS but not loaded from Google Fonts; token `--neutral-400` used but undefined; focus not returned when the form closed. |
+| `security-guidance` | `claude-plugins-official` | A hook-based plugin: automatically checks every file Claude edits against ~25 dangerous patterns (XSS, hardcoded secrets, unsafe deserialization, etc.). I ran its pattern checker across all the code (`config.js`, `script.js`, `admin.js`, `index.html`, `admin.html`, `supabase/schema.sql`, `supabase/functions/chat/index.ts`). **Found no secret key** in the code. It flagged 3 things: (1) GSAP scripts from cdnjs with no Subresource Integrity → fixed, added `integrity` + `crossorigin`; (2) `innerHTML` in `script.js` for the hero title → fixed, rebuilt with DOM nodes; (3) `innerHTML` in `admin.js` → checked manually, false positive (all fields go through `escapeHtml`). Its LLM review of diffs and of commits needs a git repo, and the project wasn't a git repo yet at that point. |
+| `commit-commands` | `claude-plugins-official` | Installed and available for local commits (`/commit`, `/commit-push-pr`), but not used yet — the project wasn't a git repo yet at that point. |
+| `impeccable` | `pbakaus/impeccable` (a separate marketplace, not `claude-plugins-official`) | Design/quality audit with `/impeccable audit`: ran a deterministic detector (61 rules) plus a direct in-browser check, at 1440px and 375px, repeated 5 times as I fixed what it found. Score: 14 → 17 → 18 → 19 → **20/20**. What it actually found, in order: (1) Tab order left the quote form and landed on hidden background elements; a chat field with no `aria-label`; chatbot replies weren't announced to screen readers; insufficient contrast on the hero text; all images served the 1600px variant including thumbnails shown at 54–152px, with no `loading="lazy"`; (2)-(3) smaller focus/contrast/text-size issues left after round 1; the drop cap was overlapping the founders' names; (4)-(5) the team photo not aligned with the rest of the section (`<figure>` with no `margin:0`), menu jumps landing under the fixed header (no `scroll-padding-top`), and one content issue the audit explicitly flagged as a decision of mine, not a code bug: the photo caption named "Erik & Camila", but the stock photo shows three unidentified men — I rewrote the caption generically (it no longer claims specific identities) and separately corrected a visible lens distortion in the stock photo (`cv2.undistort`, coefficient -0.15, then cropped to remove the resulting black edges). I checked every flagged issue by hand (contrast actually measured, not just read off the report) and applied every real fix; a few final P3 signals (a doubled 1-3px line under the header on scroll — `scroll-padding-top` was about 1px larger than the real header) were fixed directly, measuring the header's real height with Playwright instead of guessing the value. Verified with Playwright after every change, not just run blindly. |
 
-## Performanță (Lighthouse)
+## Performance (Lighthouse)
 
-Cerința din temă: Performance ≥ 85, Accessibility ≥ 90. Măsurat cu PageSpeed Insights (Lighthouse), pe 24.09.2026:
+The brief's requirement: Performance ≥ 85, Accessibility ≥ 90. Measured with PageSpeed Insights (Lighthouse), on 2026-09-24:
 
-| Versiune | Mobil — Performance | Desktop — Performance | Accessibility | Best Practices |
+| Version | Mobile — Performance | Desktop — Performance | Accessibility | Best Practices |
 |---|---|---|---|---|
-| **Live** (link-ul de mai sus) | 69 | 96 | 100 | 96 |
-| **Codul din acest folder** (verificat pe un deploy draft Netlify, 2 rulări) | **93** | **100** | 100 | 100 |
+| **Live** (link above) | 69 | 96 | 100 | 96 |
+| **Code in this folder** (checked on a Netlify draft deploy, 2 runs) | **93** | **100** | 100 | 100 |
 
-Draft-ul verificat: https://6ab52dcb5fd9a02f6634399b--halvorsen-reyes-builders-655f70.netlify.app/ — același cod ca în folder. SEO iese 63 doar pe draft, pentru că Netlify marchează automat deploy-urile draft cu `noindex`; pe live e 100. Draft-ul servește doar ca dovadă pentru Lighthouse: chatbot-ul răspunde numai pe link-ul live (funcția `chat` acceptă doar originile din `ALLOWED_ORIGINS`).
+Draft checked: https://6ab52dcb5fd9a02f6634399b--halvorsen-reyes-builders-655f70.netlify.app/ — same code as in the folder. SEO comes out at 63 on the draft only because Netlify automatically marks draft deploys with `noindex`; it's 100 on live. The draft serves only as proof for Lighthouse: the chatbot only replies on the live link (the `chat` function only accepts origins from `ALLOWED_ORIGINS`).
 
-**De ce nu e codul optimizat și pe live:** pe planul Free, Netlify a blocat deploy-urile de producție după epuizarea creditelor lunare (`netlify deploy --prod` → `Forbidden`; rămân doar „operational credits”, care țin site-ul online). Draft-urile nu consumă credite, de aceea optimizările au putut fi verificate acolo. Codul intră pe live la primul deploy de producție după resetarea creditelor, fără alte modificări.
+**Why the optimized code isn't live yet:** on the Free plan, Netlify blocked production deploys after the monthly credits ran out (`netlify deploy --prod` → `Forbidden`; only "operational credits" remain, which keep the site online). Draft deploys don't consume credits, which is why the optimizations could be verified there. The code goes live on the first production deploy after the credit reset, with no further changes needed.
 
-**Ce s-a schimbat față de live** (și cât a contat, pe mobil):
+**What changed versus live** (and how much it mattered, on mobile):
 
-1. **Pozele din carusel** — înainte, la deschiderea paginii se descărcau pozele tuturor celor 5 proiecte (22 de imagini, ~559 KB) și concurau cu poza din hero. Acum doar proiectul 1 (7 imagini, ~245 KB); restul se încarcă la navigare. LCP: 5,5 s → 4,3 s.
-2. **Fonturi găzduite local** — Google Fonts aducea 8 fișiere (~296 KB) de pe 2 domenii în plus. Acum 7 fișiere (~145 KB), generate din sursele oficiale doar cu grosimile folosite. FCP: 3,8 s → 2,0 s, LCP: 4,3 s → 2,5 s.
-3. **Fără layout shift la schimbarea fontului** — titlul din hero avea lățimea în `ch` (unitate care depinde de fontul curent), așa că sărea de pe 3 rânduri pe 2 când se încărca Playfair (CLS 0,32 pe desktop). Lățimile sunt acum în `em`, iar fonturile de rezervă au metrici ajustate (`size-adjust`). CLS desktop: 0,32 → 0,002.
-4. Scripturile cu `defer`, `preconnect` spre cdnjs.
-5. Două bug-uri vizuale găsite pe parcurs: poza echipei și miniaturile din portofoliu ieșeau deformate/înalte pe ecrane înguste (atributul `height` din HTML bătea `aspect-ratio`) — reparate cu `height: auto`.
+1. **Carousel photos** — before, opening the page downloaded the photos for all 5 projects (22 images, ~559 KB) and competed with the hero photo. Now only project 1 (7 images, ~245 KB); the rest load on navigation. LCP: 5.5s → 4.3s.
+2. **Locally hosted fonts** — Google Fonts pulled in 8 files (~296 KB) from 2 extra domains. Now 7 files (~145 KB), generated from the official sources with only the weights actually used. FCP: 3.8s → 2.0s, LCP: 4.3s → 2.5s.
+3. **No layout shift on font load** — the hero title's width was in `ch` (a unit that depends on the current font), so it jumped from 3 lines to 2 when Playfair loaded (CLS 0.32 on desktop). Widths are now in `em`, and the fallback fonts have adjusted metrics (`size-adjust`). Desktop CLS: 0.32 → 0.002.
+4. Scripts with `defer`, `preconnect` to cdnjs.
+5. Two visual bugs found along the way: the team photo and the portfolio thumbnails came out stretched/tall on narrow screens (the HTML `height` attribute was overriding `aspect-ratio`) — fixed with `height: auto`.
 
-## Limite de folosire (adăugate după predare)
+## Usage limits (added after submission)
 
-Adăugate pe 24.09.2026, după predarea temei. Funcția `chat` și formularul pot fi apelate de oricine are cheia publică din site (`config.js`), deci fără limite cineva ar putea trimite mesaje în buclă pe cheia Anthropic sau umple `leads` cu spam. Limitele stau în **Supabase**, deci n-a fost nevoie de deploy pe Netlify.
+Added on 2026-09-24, after the assignment was submitted. The `chat` function and the form can be called by anyone who has the public key from the site (`config.js`), so without limits someone could loop messages against the Anthropic key or flood `leads` with spam. The limits live in **Supabase**, so no Netlify deploy was needed.
 
-| Ce | Limita | Unde |
+| What | Limit | Where |
 |---|---|---|
-| **Chatbot, per vizitator** | **20 de mesaje pe oră** | `chat_allow()` în `supabase/rate_limits.sql`, apelată din funcția `chat` **înainte** de Anthropic |
-| **Chatbot, total** | **300 de mesaje pe zi** | la fel |
-| **Formular, total** | **30 de cereri pe oră** | trigger `leads_rate_limit` pe tabelul `leads` |
-| **Formular, per email** | **3 cereri pe zi** | la fel |
+| **Chatbot, per visitor** | **20 messages per hour** | `chat_allow()` in `supabase/rate_limits.sql`, called from the `chat` function **before** Anthropic |
+| **Chatbot, total** | **300 messages per day** | same |
+| **Form, total** | **30 requests per hour** | `leads_rate_limit` trigger on the `leads` table |
+| **Form, per email** | **3 requests per day** | same |
 
-- **Peste limita chatbot-ului**, vizitatorul primește un răspuns normal de chat („am pus chat-ul pe pauză…”) care îl trimite la formular, iar **Anthropic nu mai e apelat**. Site-ul existent îl afișează fără nicio modificare.
-- **Confidențialitate:** vizitatorul e recunoscut după o **amprentă (hash SHA-256) a IP-ului**, nu după IP. Amprentele stau în tabelul `chat_usage` (RLS pornit, fără politici: inaccesibil din site) și se șterg după 2 zile.
-- **Dacă verificarea nu se poate face** (ex. baza de date nu răspunde), chatbot-ul **refuză** mesajul în loc să-l trimită mai departe. Nu există limită de cheltuieli în Anthropic Console, deci limita din cod e singura protecție de cost.
-- **Limitele se pot schimba fără cod**, din secretele funcției: `CHAT_LIMIT_PER_HOUR`, `CHAT_LIMIT_PER_DAY`.
-- **Verificare:** SQL-ul testat pe Postgres local (rulat de 2 ori, limitele pe oră/zi/email, cheia `anon` nu poate apela funcția și nu poate citi tabelul). Live: primul mesaj a apărut în `chat_usage`, iar cu `CHAT_LIMIT_PER_HOUR=2` chatbot-ul a răspuns cu mesajul de pauză la limită; secretul a fost șters după test.
-- Pașii de instalare: `SUPABASE_SETUP.md`, pasul 10.
+- **Over the chatbot limit**, the visitor gets a normal chat reply ("chat is paused…") pointing them to the form, and **Anthropic is never called**. The existing site displays it with no changes.
+- **Privacy:** the visitor is recognized by a **fingerprint (SHA-256 hash) of their IP**, not by the IP itself. Fingerprints live in the `chat_usage` table (RLS on, no policies: unreachable from the site) and are deleted after 2 days.
+- **If the check can't be performed** (e.g. the database isn't responding), the chatbot **refuses** the message instead of passing it through. There's no spending limit set in the Anthropic Console, so the limit in the code is the only cost protection.
+- **Limits can be changed without touching code**, via the function's secrets: `CHAT_LIMIT_PER_HOUR`, `CHAT_LIMIT_PER_DAY`.
+- **Verification:** the SQL was tested on local Postgres (run twice — the hourly/daily/per-email limits, the `anon` key can't call the function and can't read the table). Live: the first message showed up in `chat_usage`, and with `CHAT_LIMIT_PER_HOUR=2` the chatbot replied with the pause message at the limit; the secret was deleted after the test.
+- Setup steps: `SUPABASE_SETUP.md`, step 10.
 
-## Abateri de la ghid (documentate)
+## Deviations from the brief (documented)
 
-Ce nu s-a făcut exact ca în PDF-ul temei / ghidul „Referințe și animații”, și de ce:
+What wasn't done exactly as in the assignment PDF / the "References and animations" guide, and why:
 
-1. **Serverul MCP Supabase a fost adăugat abia la final.** Tabelele, RLS și funcția `chat` au fost create manual: `supabase/schema.sql` rulat în SQL Editor (fișier versionat în proiect), codul funcției pus din dashboard. De aceea lista de migrări din Supabase e goală. La final am adăugat MCP-ul oficial Supabase în mod **read-only** (`.mcp.json`) și l-am folosit pentru verificare:
-   - `leads`: RLS pornit, politică INSERT doar pentru `anon`, SELECT doar pentru adminii autentificați (`is_admin()`); constrângeri CHECK pe toate câmpurile.
-   - `admins`: RLS pornit, fără politici — intenționat, nu e accesibil prin API, e citit doar de `is_admin()`.
-   - Security advisors: **0 erori**, 2 avertismente minore, lăsate intenționat: `is_admin()` e `SECURITY DEFINER` apelabilă de utilizatorii logați (le spune doar dacă ei înșiși sunt admini; funcția trebuie să rămână executabilă, altfel politica de citire pentru admini nu mai funcționează), și protecția împotriva parolelor compromise e oprită (contează doar pentru conturile de admin).
-2. **`REFERENCE.md` a fost scris după build, nu înainte.** Designul pornește din `DESIGN.md` și din poze; analiza site-ului model (thorsenconstruction.us, cu Playwright MCP) a fost făcută ulterior, ca documentare. Nu s-a copiat text, poze sau cod.
-3. **Animația titlului din hero rulează la încărcarea paginii, nu cu scrub.** Celelalte animații sunt legate de scroll (micșorarea hero-ului și parallax-ul pozelor cu `scrub`, apariția portofoliului la scroll). Un titlu ascuns până la primul scroll ar fi lăsat hero-ul fără titlu la deschidere.
-4. **Portofoliul e un carusel cu săgeți, nu o secțiune pinned cu scroll orizontal**, fără Lenis și fără colțuri rotunjite la hero — decizii de design (scroll-ul paginii rămâne strict vertical; `DESIGN.md` cere colțuri drepte). `prefers-reduced-motion` e respectat: cu opțiunea activă, animațiile GSAP nu pornesc și conținutul e vizibil direct.
-5. **Pozele sunt servite de pe Netlify**, nu din Supabase Storage (cum apare în schema de arhitectură) — sunt fișiere statice ale site-ului, deja optimizate WebP.
-6. **Proiectul nu e un repo git**, deci nu există istoric de commit-uri.
+1. **The Supabase MCP server was only added at the very end.** The tables, RLS, and the `chat` function were created manually: `supabase/schema.sql` run in the SQL Editor (a file versioned in the project), the function's code pasted in from the dashboard. That's why the migrations list in Supabase is empty. At the end I added the official Supabase MCP in **read-only** mode (`.mcp.json`) and used it to verify:
+   - `leads`: RLS on, INSERT policy for `anon` only, SELECT only for authenticated admins (`is_admin()`); CHECK constraints on every field.
+   - `admins`: RLS on, no policies — intentional, not reachable via the API, read only by `is_admin()`.
+   - Security advisors: **0 errors**, 2 minor warnings, left intentionally: `is_admin()` is `SECURITY DEFINER` and callable by logged-in users (it only tells them whether they themselves are admins; the function has to stay executable, or the admin read policy stops working), and leaked-password protection is turned off (it only matters for the admin accounts).
+2. **`REFERENCE.md` was written after the build, not before.** The design starts from `DESIGN.md` and the photos; the analysis of the reference site (thorsenconstruction.us, with Playwright MCP) was done afterward, as documentation. No text, photos, or code were copied.
+3. **The hero title animation runs on page load, not scrubbed.** The other animations are scroll-tied (the hero shrink and photo parallax use `scrub`, the portfolio reveal on scroll). A title hidden until the first scroll would have left the hero with no title on open.
+4. **The portfolio is an arrow-driven carousel, not a pinned horizontal-scroll section**, with no Lenis and no rounded corners on the hero — design decisions (the page scroll stays strictly vertical; `DESIGN.md` calls for square corners). `prefers-reduced-motion` is respected: with that option on, the GSAP animations don't start and the content is visible immediately.
+5. **Photos are served from Netlify**, not from Supabase Storage (as shown in the architecture diagram) — they're static site files, already optimized as WebP.
+6. **The project wasn't a git repo** at submission time, so there was no commit history then.
 
-## Test de acceptanță
+## Acceptance test
 
-Verificat pe site-ul live, 24.09.2026.
+Checked on the live site, 2026-09-24.
 
-- [x] URL public se încarcă; la 375px lățime nu există scroll orizontal
-- [x] Toate cele 5 proiecte apar cu poze proprii și descriere; echipa apare cu poza
-- [x] Chat: „Cine sunt proprietarii?" → Erik Halvorsen și Camila Reyes
-- [x] Chat: „Ce proiecte ați făcut?" → cele 5, cu nume corecte
-- [x] Chat: „Cât costă o casă de 150 mp?" → nu inventează preț, trimite la formular
-- [x] Chat: „Scrie-mi o poezie" → refuză politicos
-- [x] View Source / Network: cheia Anthropic nu apare nicăieri
-- [x] Formular trimis → rândul apare în tabelul `leads`
-- [x] Formular cu email gol sau invalid → respins, cu mesaj clar
-- [x] Cu cheia `anon`, SELECT pe `leads` întoarce 0 rânduri
-- [x] Lighthouse: Accessibility ≥ 90 — 100 (mobil)
-- [ ] Lighthouse: Performance ≥ 85 — pe live: desktop 96 ✅, mobil 69 ❌; pe codul din folder (draft): mobil 93 ✅, desktop 100 ✅ — vezi [Performanță (Lighthouse)](#performanță-lighthouse)
-- [x] README.md: ≥ 3 plugin-uri, ≥ 2 marketplace-uri, rolul fiecăruia
+- [x] Public URL loads; no horizontal scroll at 375px width
+- [x] All 5 projects appear with their own photos and description; the team section shows the photo
+- [x] Chat: "Who are the owners?" → Erik Halvorsen and Camila Reyes
+- [x] Chat: "What projects have you done?" → the 5 of them, with correct names
+- [x] Chat: "How much does a 150 sqm house cost?" → doesn't make up a price, points to the form
+- [x] Chat: "Write me a poem" → politely declines
+- [x] View Source / Network: the Anthropic key doesn't appear anywhere
+- [x] Form submitted → the row appears in the `leads` table
+- [x] Form with an empty or invalid email → rejected, with a clear message
+- [x] With the `anon` key, SELECT on `leads` returns 0 rows
+- [x] Lighthouse: Accessibility ≥ 90 — 100 (mobile)
+- [ ] Lighthouse: Performance ≥ 85 — on live: desktop 96 ✅, mobile 69 ❌; on the code in this folder (draft): mobile 93 ✅, desktop 100 ✅ — see [Performance (Lighthouse)](#performance-lighthouse)
+- [x] README.md: ≥ 3 plugins, ≥ 2 marketplaces, each one's role

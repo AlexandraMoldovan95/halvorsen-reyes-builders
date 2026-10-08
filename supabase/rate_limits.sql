@@ -1,14 +1,14 @@
 -- ============================================================
--- Halvorsen & Reyes Builders — limite de folosire
--- Rulează tot fișierul o dată în SQL Editor (după schema.sql).
--- Re-rularea e sigură. Nu modifică tabelul leads sau datele lui.
+-- Halvorsen & Reyes Builders — rate limits
+-- Run the whole file once in the SQL Editor (after schema.sql).
+-- Re-running is safe. Doesn't touch the leads table or its data.
 -- ============================================================
 
 -- ------------------------------------------------------------
--- 1) Chatbot: câte mesaje pe vizitator și în total
+-- 1) Chatbot: how many messages per visitor and in total
 -- ------------------------------------------------------------
--- Un rând pentru fiecare mesaj trimis la chatbot. Nu păstrăm IP-ul, ci doar
--- un hash (amprentă) al lui, și doar 2 zile.
+-- One row per message sent to the chatbot. We don't keep the IP, only a
+-- hash (fingerprint) of it, and only for 2 days.
 create table if not exists public.chat_usage (
   id bigint generated always as identity primary key,
   created_at timestamptz not null default now(),
@@ -17,13 +17,13 @@ create table if not exists public.chat_usage (
 create index if not exists chat_usage_created_idx on public.chat_usage (created_at);
 create index if not exists chat_usage_visitor_idx on public.chat_usage (visitor, created_at);
 
--- RLS pornit și nicio politică => din site (cheia anon) nimeni nu poate citi
--- sau scrie aici. Doar funcția de mai jos, apelată de Edge Function-ul chat.
+-- RLS on with no policy => from the site (anon key) nobody can read or write
+-- here. Only the function below, called by the chat Edge Function.
 alter table public.chat_usage enable row level security;
 
--- Verifică limita și, dacă e loc, înregistrează mesajul. Întoarce true/false.
--- Lock-ul face verificarea + înregistrarea atomice (două cereri simultane nu
--- pot trece amândouă peste limită).
+-- Checks the limit and, if there's room, logs the message. Returns true/false.
+-- The lock makes the check + insert atomic (two simultaneous requests can't
+-- both slip past the limit).
 create or replace function public.chat_allow(
   p_visitor text,
   p_per_hour int default 20,
@@ -54,17 +54,17 @@ begin
 end;
 $$;
 
--- Doar Edge Function-ul (cu cheia service_role, care stă pe server) o poate apela.
+-- Only the Edge Function (with the service_role key, which lives on the server) can call it.
 revoke all on function public.chat_allow(text, int, int) from public, anon, authenticated;
 grant execute on function public.chat_allow(text, int, int) to service_role;
 
 -- ------------------------------------------------------------
--- 2) Formularul de ofertă: anti-spam
+-- 2) Quote form: anti-spam
 -- ------------------------------------------------------------
--- Formularul scrie direct în leads cu cheia anon, deci limita trebuie să fie
--- în baza de date. Maximum 30 de cereri pe oră în total și 3 pe zi de pe
--- același email. Peste limită, inserarea e refuzată și site-ul arată mesajul
--- de eroare obișnuit al formularului.
+-- The form writes straight into leads with the anon key, so the limit has to
+-- live in the database. Max 30 requests per hour total, and 3 per day from
+-- the same email. Over the limit, the insert is rejected and the site shows
+-- its usual form error message.
 create or replace function public.leads_rate_limit()
 returns trigger
 language plpgsql
@@ -74,14 +74,14 @@ as $$
 begin
   if (select count(*) from public.leads
        where created_at > now() - interval '1 hour') >= 30 then
-    raise exception 'Prea multe cereri într-o oră. Încearcă din nou mai târziu.'
+    raise exception 'Too many requests in the last hour. Please try again later.'
       using errcode = 'P0001';
   end if;
 
   if (select count(*) from public.leads
        where lower(email) = lower(new.email)
          and created_at > now() - interval '1 day') >= 3 then
-    raise exception 'Ai trimis deja 3 cereri azi de pe acest email.'
+    raise exception 'You''ve already sent 3 requests today from this email.'
       using errcode = 'P0001';
   end if;
 

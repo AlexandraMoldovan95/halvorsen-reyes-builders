@@ -1,51 +1,51 @@
 # CLAUDE.md — Halvorsen & Reyes Builders
 
-## Clientul (fictiv)
+## The client (fictional)
 
-| Câmp | Valoare |
+| Field | Value |
 |---|---|
-| Nume | Halvorsen & Reyes Builders |
-| Proprietari | Erik Halvorsen (execuție, șantier) și Camila Reyes (design, relația cu clienții) |
-| Fondată | 2011 |
-| Servicii | Case la cheie, renovări complete, extinderi |
-| Zonă | Denver, Colorado + 50 km |
+| Name | Halvorsen & Reyes Builders |
+| Owners | Erik Halvorsen (execution, job site) and Camila Reyes (design, client relations) |
+| Founded | 2011 |
+| Services | Turnkey homes, full renovations, additions |
+| Area | Denver, Colorado + 50 km |
 | Contact | hello@hr-builders.example · (555) 010-2411 |
-| Program | Luni–Vineri 8:00–17:00 |
+| Hours | Monday–Friday 8:00 AM–5:00 PM |
 
-## Ce trebuie livrat
+## What needs to be delivered
 
-1. Site one-page, responsive: hero, servicii, portofoliu (5 proiecte), echipă, contact.
-2. Buton „Cere o ofertă" → formular (nume, email, telefon, tip proiect, buget estimat, mesaj) → tabel Supabase `leads`.
-3. Chatbot care răspunde doar despre firmă; pentru orice altceva refuză politicos și trimite spre formular.
-4. Site publicat la un URL public (Netlify).
-5. README.md cu plugin-urile folosite: nume, marketplace, ce a făcut concret.
+1. A responsive one-page site: hero, services, portfolio (5 projects), team, contact.
+2. A "Request a quote" button → form (name, email, phone, project type, estimated budget, message) → Supabase `leads` table.
+3. A chatbot that only answers questions about the company; for anything else it politely declines and points to the form.
+4. The site published at a public URL (Netlify).
+5. A README.md listing the plugins used: name, marketplace, what it concretely did.
 
-## Arhitectură (obligatorie, motiv de securitate)
+## Architecture (mandatory, for security reasons)
 
-- **Frontend static** (HTML/CSS/JS vanilla) pe **Netlify** — Supabase Storage servește `.html` ca `text/plain`, deci nu poate găzdui pagina.
-- **Supabase** ține doar backend-ul: tabelul `leads` + Edge Function `chat`.
-- **Cheia Anthropic** stă doar ca secret Supabase, apelată din Edge Function — niciodată în JS client (verificabil din View Source / Network).
-- **RLS pornit** pe `leads`: rolul `anon` poate doar `INSERT`, niciodată `SELECT`.
-- Fără RAG/vectori pentru chatbot — knowledge base-ul (~1 pagină) intră întreg în system prompt.
-- Poze convertite la WebP, max 1600px lățime, înainte de folosire pe site.
+- **Static frontend** (vanilla HTML/CSS/JS) on **Netlify** — Supabase Storage serves `.html` as `text/plain`, so it can't host the page.
+- **Supabase** holds only the backend: the `leads` table + the `chat` Edge Function.
+- **The Anthropic key** lives only as a Supabase secret, called from the Edge Function — never in client-side JS (verifiable via View Source / Network).
+- **RLS on** for `leads`: the `anon` role can only `INSERT`, never `SELECT`.
+- No RAG/vectors for the chatbot — the knowledge base (~1 page) goes entirely into the system prompt.
+- Photos converted to WebP, max 1600px width, before use on the site.
 
-## Stack & reguli de cod
+## Stack & code rules
 
-- Fără framework, fără build step. Un `index.html`, `styles.css`, `script.js`, `config.js` (URL + cheie anon Supabase).
-- Animații: GSAP + ScrollTrigger (CDN cdnjs). Fără gradient-uri generice, fără font Inter ca font principal de display, fără emoji în UI.
-- Design: vezi `DESIGN.md` — paletă negru/alb + roșu editorial, Playfair Display + Lora + JetBrains Mono, colțuri drepte (0 border-radius), poze de portofoliu **color**, niciodată grayscale.
-- Portofoliul e un carusel cu săgeți (click), nu scroll orizontal — decizie explicită, scroll-ul paginii rămâne strict vertical peste tot.
-- Respectă `prefers-reduced-motion`.
+- No framework, no build step. One `index.html`, `styles.css`, `script.js`, `config.js` (Supabase URL + anon key).
+- Animations: GSAP + ScrollTrigger (cdnjs CDN). No generic gradients, no Inter as the main display font, no emoji in the UI.
+- Design: see `DESIGN.md` — black/white + editorial red palette, Playfair Display + Lora + JetBrains Mono, square corners (0 border-radius), portfolio photos **in color**, never grayscale.
+- The portfolio is an arrow-driven (click) carousel, not horizontal scroll — an explicit decision; page scroll stays strictly vertical everywhere.
+- Respects `prefers-reduced-motion`.
 
-## Proces urmat pentru acest proiect
+## Process followed for this project
 
-1. `CLAUDE.md` (acest fișier) — context.
-2. `DESIGN.md` — adaptare Newsprint (designprompts.dev), tradusă pentru vanilla CSS.
-3. Descrieri proiecte + paletă generate din pozele din `Group/` (verificate manual).
-4. Build: `index.html` + `styles.css` + `script.js`, cu bucla vizuală (2 momente wow: hero shrink + portofoliu, carusel pe săgeți — schimbat ulterior din varianta inițială cu scroll orizontal, ca pagina să rămână strict scroll vertical).
-5. Backend: `supabase/schema.sql` (tabel + RLS) + `supabase/functions/chat/index.ts` (Edge Function, model Haiku pentru cost minim).
-6. Pași manuali rămași: vezi `SUPABASE_SETUP.md`.
+1. `CLAUDE.md` (this file) — context.
+2. `DESIGN.md` — a Newsprint adaptation (designprompts.dev), adapted for vanilla CSS.
+3. Project descriptions + palette generated from the photos in `Group/` (checked by hand).
+4. Build: `index.html` + `styles.css` + `script.js`, with the visual arc (2 "wow" moments: hero shrink + portfolio, arrow-driven carousel — changed later from the original horizontal-scroll version, so the page stays strictly vertical-scroll).
+5. Backend: `supabase/schema.sql` (table + RLS) + `supabase/functions/chat/index.ts` (Edge Function, Haiku model for minimal cost).
+6. Remaining manual steps: see `SUPABASE_SETUP.md`.
 
-## Plugin-uri Claude Code (cerință temă, min. 3, min. 2 marketplace-uri)
+## Claude Code plugins (assignment requirement, min. 3, min. 2 marketplaces)
 
-De completat în README.md când instalezi plugin-urile din `/plugin` (marketplace oficial `claude-plugins-official`) și dintr-un al doilea marketplace.
+To be filled in in README.md once the plugins are installed via `/plugin` (official marketplace `claude-plugins-official`) and from a second marketplace.

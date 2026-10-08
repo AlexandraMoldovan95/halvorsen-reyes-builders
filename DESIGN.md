@@ -1,42 +1,42 @@
 # DESIGN.md — Halvorsen & Reyes Builders
 
-Stil vizual: **"Blueprint Editorial"** — adaptare a stilului Newsprint (designprompts.dev), tradusă pentru un site static vanilla (fără React/Tailwind/shadcn) și corectată pentru un client de construcții: pozele de portofoliu rămân **color, nu grayscale** — ele vând meșteșugul, nu ilustrează un ziar.
+Visual style: **"Blueprint Editorial"** — an adaptation of the Newsprint style (designprompts.dev), translated for a vanilla static site (no React/Tailwind/shadcn) and adjusted for a construction client: the portfolio photos stay **color, not grayscale** — they sell the craftsmanship, they're not illustrating a newspaper.
 
-De ce funcționează pentru firma asta: rigoarea grid-ului cu borduri vizibile și unghiurile drepte, fără rotunjiri, evocă blueprint-uri și precizie de șantier, nu doar "aspect de ziar". Autoritatea tipografică transmite încredere (o firmă serioasă, din 2011), fără să pară o agenție de media.
+Why it works for this company: the rigor of a grid with visible borders and square corners, no rounding, evokes blueprints and job-site precision, not just a "newspaper look". The typographic authority conveys trust (a serious company, since 2011), without looking like a media agency.
 
-Nu implementa orbește tot ce scrie mai jos ca literă de lege — sunt token-uri și reguli de referință. Dacă ceva nu arată bine aplicat pe conținutul real (poze, texte), ajustează, dar păstrează logica: contrast mare, grid vizibil, tipografie dramatică, zero decor inutil.
-
----
-
-## 1. Filozofie
-
-**Precizie + încredere.** Fără gradient-uri moi, fără umbre difuze, fără colțuri rotunjite, fără emoji în UI. Structura e vizibilă și celebrată (borduri, grid), nu ascunsă. Tipografia face ierarhia, nu culoarea.
-
-Vibe: solid, direct, de încredere — genul de firmă care predă lucrarea la timp și fără scuze. Nu "startup jucăuș", nu "agenție de modă".
+Don't blindly implement everything below as gospel — these are reference tokens and rules. If something doesn't look good applied to the real content (photos, copy), adjust it, but keep the logic: high contrast, visible grid, dramatic typography, zero unnecessary decoration.
 
 ---
 
-## 2. Culori
+## 1. Philosophy
 
-Mod unic — light, permanent (fără dark mode).
+**Precision + trust.** No soft gradients, no diffuse shadows, no rounded corners, no emoji in the UI. Structure is visible and celebrated (borders, grid), not hidden. Typography carries the hierarchy, not color.
 
-| Token | Valoare | Rol |
+Vibe: solid, direct, trustworthy — the kind of company that hands over the job on time and without excuses. Not "playful startup", not "fashion agency".
+
+---
+
+## 2. Colors
+
+Single mode — light, permanent (no dark mode).
+
+| Token | Value | Role |
 |---|---|---|
-| `--bg` | `#F9F9F7` | Fundal (alb cald, nu alb pur — simulează hârtie/blueprint) |
-| `--ink` | `#111111` | Text principal + borduri (negru profund, nu `#000`) |
-| `--muted` | `#E5E5E0` | Borduri secundare, fundaluri subtile |
-| `--accent` | `#CC0000` | Roșu editorial — **folosit rar**: CTA-uri, badge-uri, hover. 95%+ din site e negru/alb |
+| `--bg` | `#F9F9F7` | Background (warm white, not pure white — simulates paper/blueprint) |
+| `--ink` | `#111111` | Main text + borders (deep black, not `#000`) |
+| `--muted` | `#E5E5E0` | Secondary borders, subtle backgrounds |
+| `--accent` | `#CC0000` | Editorial red — **used sparingly**: CTAs, badges, hover. 95%+ of the site is black/white |
 | `--neutral-100` | `#F5F5F5` | Hover backgrounds |
-| `--neutral-200` | `#E5E5E5` | Placeholder-uri imagini |
-| `--neutral-500` | `#737373` | Metadata, caption-uri |
-| `--neutral-600` | `#525252` | Variații text body |
-| `--neutral-700` | `#404040` | Subtitluri |
+| `--neutral-200` | `#E5E5E5` | Image placeholders |
+| `--neutral-500` | `#737373` | Metadata, captions |
+| `--neutral-600` | `#525252` | Body text variations |
+| `--neutral-700` | `#404040` | Subtitles |
 
-Contrast: negru pe `--bg` >17:1 (AAA). Roșu pe `--bg` >5:1 (AA) — nu pune niciodată roșu pe negru.
+Contrast: black on `--bg` >17:1 (AAA). Red on `--bg` >5:1 (AA) — never put red on black.
 
 ---
 
-## 3. Tipografie
+## 3. Typography
 
 ```css
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400&family=Lora:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
@@ -49,34 +49,34 @@ Contrast: negru pe `--bg` >17:1 (AAA). Roșu pe `--bg` >5:1 (AA) — nu pune nic
 }
 ```
 
-- **H1 (Hero)** — `--font-display`, `clamp(2.75rem, 6vw, 7rem)`, `line-height: 0.95`, `letter-spacing: -0.02em`. Un singur H1 pe pagină, în hero.
-- **H2 (secțiuni)** — `--font-display`, `clamp(2rem, 4vw, 3rem)`, `font-weight: 800`.
-- **H3 (titluri carduri/proiecte)** — `--font-display`, `clamp(1.4rem, 2.5vw, 1.75rem)`, `font-weight: 700`.
+- **H1 (Hero)** — `--font-display`, `clamp(2.75rem, 6vw, 7rem)`, `line-height: 0.95`, `letter-spacing: -0.02em`. One H1 per page, in the hero.
+- **H2 (sections)** — `--font-display`, `clamp(2rem, 4vw, 3rem)`, `font-weight: 800`.
+- **H3 (card/project titles)** — `--font-display`, `clamp(1.4rem, 2.5vw, 1.75rem)`, `font-weight: 700`.
 - **Body** — `--font-body`, `1rem–1.125rem`, `line-height: 1.65`.
-- **Metadata/labels** (ex: "Est. 2011", telefon, program) — `--font-mono`, `0.75rem`, uppercase, `letter-spacing: 0.15em`.
-- Navigație, butoane, etichete de UI → `--font-ui`, uppercase, `letter-spacing: 0.1em`.
-- Titluri/body → sentence case, niciodată ALL CAPS pe propoziții întregi.
+- **Metadata/labels** (e.g. "Est. 2011", phone, hours) — `--font-mono`, `0.75rem`, uppercase, `letter-spacing: 0.15em`.
+- Navigation, buttons, UI labels → `--font-ui`, uppercase, `letter-spacing: 0.1em`.
+- Titles/body → sentence case, never ALL CAPS on full sentences.
 
 ---
 
-## 4. Formă: colțuri, borduri, umbre
+## 4. Shape: corners, borders, shadows
 
-- **Border-radius: 0 peste tot.** Fără excepții — nici la butoane, nici la input-uri, nici la carduri.
-- **Borduri:** `1px solid var(--ink)` standard; `3px–4px solid` pentru separatoare majore de secțiune. La grid-uri alăturate (ex. cele 5 proiecte), cotele partajează bordura — nu bordură dublă.
-- **Umbre:** fără blur, fără drop-shadow moale. Un singur efect, la hover:
+- **Border-radius: 0 everywhere.** No exceptions — not on buttons, not on inputs, not on cards.
+- **Borders:** `1px solid var(--ink)` standard; `3px–4px solid` for major section separators. On adjacent grids (e.g. the 5 projects), neighboring cells share a border — never a doubled-up border.
+- **Shadows:** no blur, no soft drop-shadow. One single effect, on hover:
 ```css
 .hard-shadow:hover {
   box-shadow: 4px 4px 0 0 var(--ink);
   transform: translate(-2px, -2px);
 }
 ```
-(animă doar `transform`, niciodată `box-shadow` direct — cere Lighthouse Performance ≥85)
+(animate only `transform`, never `box-shadow` directly — Lighthouse Performance ≥85 is required)
 
 ---
 
-## 5. Textură de fundal (opțional, discret)
+## 5. Background texture (optional, subtle)
 
-Punct-grid foarte subtil pe `body`, simulează hârtie/blueprint fără să distragă:
+A very subtle dot grid on `body`, simulating paper/blueprint without being distracting:
 
 ```css
 body {
@@ -84,24 +84,24 @@ body {
   background-image: radial-gradient(var(--ink) 0.5px, transparent 0.5px);
   background-size: 16px 16px;
   background-position: 0 0;
-  opacity: 1; /* densitatea reală vine din alpha-ul culorii, nu din opacity pe body */
+  opacity: 1; /* the real density comes from the color's alpha, not from opacity on body */
 }
 ```
-Folosește o variantă cu alpha mic (`rgba(17,17,17,0.04)`) în loc de `var(--ink)` plin, ca să rămână discret.
+Use a low-alpha variant (`rgba(17,17,17,0.04)`) instead of solid `var(--ink)`, to keep it subtle.
 
 ---
 
-## 6. Poze — regula cea mai importantă
+## 6. Photos — the single most important rule
 
-**Toate cele 5 proiecte de portofoliu: color, netratate, calitate maximă.** Sunt dovada muncii firmei — nu le trata vizual (fără grayscale, fără sepia, fără filtre). Optimizează tehnic (WebP, max 1600px lățime, lazy-load sub fold), dar păstrează culoarea reală.
+**All 5 portfolio projects: color, untreated, highest quality.** They're the proof of the company's work — don't visually treat them (no grayscale, no sepia, no filters). Optimize technically (WebP, max 1600px width, lazy-load below the fold), but keep the real color.
 
-Poza de echipă (cea foto, nu cartoon) poate primi un tratament editorial discret — un cadru cu bordură groasă `--ink` și un caption tip `--font-mono` sub ea ("Erik & Camila — din 2011"). Poza cartoon rămâne curată, fără filtre, ca avatar pentru chatbot.
+The team photo (the actual photo, not the cartoon) can get a subtle editorial treatment — a frame with a thick `--ink` border and a `--font-mono` caption underneath ("Erik & Camila — since 2011"). The cartoon photo stays clean, no filters, as the chatbot avatar.
 
-Placeholder-uri (dacă o poză lipsește temporar): pattern radial de puncte, nu gri plat.
+Placeholders (if a photo is temporarily missing): a radial dot pattern, not flat gray.
 
 ---
 
-## 7. Butoane
+## 7. Buttons
 
 ```css
 .btn-primary {
@@ -125,11 +125,11 @@ Placeholder-uri (dacă o poză lipsește temporar): pattern radial de puncte, nu
 .btn-secondary:hover { background: var(--ink); color: var(--bg); }
 ```
 
-Butonul „Cere o ofertă" e `.btn-primary`. Toate țintele tactile ≥44×44px (obligatoriu pentru mobil).
+The "Request a quote" button is `.btn-primary`. All tap targets ≥44×44px (required for mobile).
 
 ---
 
-## 8. Carduri / containere (proiecte, servicii)
+## 8. Cards / containers (projects, services)
 
 ```css
 .card {
@@ -139,11 +139,11 @@ Butonul „Cere o ofertă" e `.btn-primary`. Toate țintele tactile ≥44×44px 
 }
 ```
 
-Grid de portofoliu: coloanele adiacente partajează bordura dreaptă (`border-right` pe toate mai puțin ultima), toate au `border-bottom` pe mobil când se prăbușesc într-o coloană.
+Portfolio grid: adjacent columns share the right border (`border-right` on all but the last), all get `border-bottom` on mobile when they collapse into one column.
 
 ---
 
-## 9. Input-uri (formularul de ofertă)
+## 9. Inputs (the quote form)
 
 ```css
 .field {
@@ -161,72 +161,72 @@ Grid de portofoliu: coloanele adiacente partajează bordura dreaptă (`border-ri
 }
 ```
 
-Validare vizuală: câmp invalid → `border-bottom-color: var(--accent)` + mesaj text sub câmp (nu doar culoare — pentru accesibilitate).
+Visual validation: an invalid field → `border-bottom-color: var(--accent)` + a text message under the field (not color alone — for accessibility).
 
 ---
 
-## 10. Iconițe
+## 10. Icons
 
-Fără librărie externă (evită dependință suplimentară pe un site static fără build step). SVG inline, `stroke-width: 1.5`, `stroke: var(--ink)`, `fill: none`, dimensiune `24×24` standard / `16×16` mic. În secțiuni inversate (fundal negru), `stroke: var(--bg)`.
+No external library (avoids an extra dependency on a static site with no build step). Inline SVG, `stroke-width: 1.5`, `stroke: var(--ink)`, `fill: none`, standard `24×24` size / small `16×16`. In reversed sections (black background), `stroke: var(--bg)`.
 
-Container opțional pentru iconițe de servicii: cutie cu bordură `1px solid var(--ink)`, `48×48px`, hover → fundal negru + iconiță albă.
+Optional container for service icons: a box with a `1px solid var(--ink)` border, `48×48px`, hover → black background + white icon.
 
 ---
 
 ## 11. Layout
 
-- Container: `max-width: 1280px`, centrat, `padding-inline: 1rem` (mobil) → `2rem` (desktop).
-- Grid: CSS Grid nativ, `grid-template-columns: repeat(12, 1fr)`, fără framework.
-- Split-uri editoriale, nu 50/50: hero `8/4`, servicii `5/7`, footer `2 / 1 / 1 / 1`.
-- Spațiere pe scară de 8px: `0.5rem / 1rem / 2rem / 4rem`. Mobil: un pas mai mic decât desktop.
+- Container: `max-width: 1280px`, centered, `padding-inline: 1rem` (mobile) → `2rem` (desktop).
+- Grid: native CSS Grid, `grid-template-columns: repeat(12, 1fr)`, no framework.
+- Editorial splits, not 50/50: hero `8/4`, services `5/7`, footer `2 / 1 / 1 / 1`.
+- Spacing on an 8px scale: `0.5rem / 1rem / 2rem / 4rem`. Mobile: one step smaller than desktop.
 
 ---
 
-## 12. Momente "wow" (maxim 2, cum cere tema)
+## 12. "Wow" moments (max 2, as the brief requires)
 
-Nu toate elementele "non-generice" din Newsprint original — doar astea două, bine executate:
+Not every "non-generic" element from the original Newsprint — only these two, well executed:
 
-1. **Hero → card la scroll.** Poza de la Rancho Del Monico full-screen; la scroll se micșorează într-un card cu bordură groasă, titlul apare cuvânt-cu-cuvânt (GSAP SplitText + ScrollTrigger scrub).
-2. **Portofoliu — carusel pe săgeți, nu scroll orizontal.** Decizie schimbată față de planul inițial: scroll-ul pe pagină rămâne strict vertical peste tot, inclusiv în secțiunea portofoliu — niciun element nu deturnează scroll-ul utilizatorului. Trecerea între cele 5 proiecte se face explicit, cu butoane săgeată stânga/dreapta și puncte de progres (click, nu scroll). Rămâne al doilea moment "wow" — tranziție `transform` animată, nu o listă statică — dar fără hijacking de scroll.
+1. **Hero → card on scroll.** The Rancho Del Monico photo full-screen; on scroll it shrinks into a card with a thick border, the title appears word-by-word (GSAP SplitText + ScrollTrigger scrub).
+2. **Portfolio — arrow-driven carousel, not horizontal scroll.** Changed from the original plan: page scroll stays strictly vertical everywhere, including in the portfolio section — no element hijacks the user's scroll. Moving between the 5 projects is explicit, with left/right arrow buttons and progress dots (click, not scroll). Still counts as the second "wow" moment — an animated `transform` transition, not a static list — but without scroll hijacking.
 
-Restul (marquee ticker, "Vol. 1 Edition", drop caps peste tot) — **eliminat**. Nu servesc unei firme de construcții și riscă să pară un experiment de design, nu un site profesional. Un singur drop-cap discret e acceptabil, opțional, pe primul paragraf din secțiunea "Despre noi" — nimic altundeva.
+Everything else (marquee ticker, "Vol. 1 Edition", drop caps everywhere) — **removed**. They don't serve a construction company and risk looking like a design experiment, not a professional site. One subtle drop-cap is acceptable, optional, on the first paragraph of the "About us" section — nowhere else.
 
-Metadata stil masthead, adaptată pe brand, dacă vrei un ecou al stilului editorial fără tonul de "breaking news":
+Masthead-style metadata, adapted to the brand, if you want an echo of the editorial style without the "breaking news" tone:
 ```
-EST. 2011 · DENVER, CO · CASE LA CHEIE · RENOVĂRI · EXTINDERI
+EST. 2011 · DENVER, CO · TURNKEY HOMES · RENOVATIONS · ADDITIONS
 ```
-în `--font-mono`, uppercase, sub logo sau în footer — nu "Vol. 1 Edition".
+in `--font-mono`, uppercase, under the logo or in the footer — not "Vol. 1 Edition".
 
 ---
 
-## 13. Mișcare
+## 13. Motion
 
-Rapidă, mecanică, fără easing organic/bouncy: `transition: all 0.2s ease-out`. Inversare instant de culoare la hover pe butoane. Respectă `prefers-reduced-motion`: dacă e activ, toate animațiile GSAP se opresc, conținutul e vizibil direct (fără cerință ca utilizatorul să aștepte un scroll).
+Fast, mechanical, no organic/bouncy easing: `transition: all 0.2s ease-out`. Instant color inversion on button hover. Respects `prefers-reduced-motion`: when it's on, all GSAP animations stop and content is visible immediately (no requirement for the user to wait through a scroll).
 
 ---
 
 ## 14. Responsive
 
-Breakpoints: mobil `<768px` (default) · tabletă `768px+` · desktop `1024px+`.
+Breakpoints: mobile `<768px` (default) · tablet `768px+` · desktop `1024px+`.
 
-Pe mobil: grid-urile devin `grid-template-columns: 1fr`, `border-right` dispare (rămâne `border-bottom`), H1 scade la `clamp` minim, padding-urile scad cu un pas, CTA-urile devin `width: 100%`, navigația devine hamburger (țintă ≥44px). **Obligatoriu: la 375px lățime, zero scroll orizontal** — verifică explicit, e în testul de acceptanță.
-
----
-
-## 15. Accesibilitate
-
-- Focus vizibil doar la navigare cu tastatura: `:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }`.
-- HTML semantic: `header`, `nav`, `section`, `footer`, ierarhie corectă `h1`→`h3`.
-- `alt` pe toate imaginile (inclusiv cele decorative — text gol `alt=""` dacă chiar sunt decorative).
-- Butoane reale (`<button>`), nu `<div onclick>`. Formularul are `<label>` pentru fiecare câmp.
-- Țintă: Lighthouse Accessibility ≥90.
+On mobile: grids become `grid-template-columns: 1fr`, `border-right` disappears (keeps `border-bottom`), H1 drops to its minimum `clamp`, padding drops one step, CTAs become `width: 100%`, navigation becomes a hamburger (target ≥44px). **Required: at 375px width, zero horizontal scroll** — check this explicitly, it's in the acceptance test.
 
 ---
 
-## 16. Implementare — constrângeri
+## 15. Accessibility
 
-- **Vanilla CSS + custom properties**, fără Tailwind, fără shadcn, fără React. Un singur fișier `styles.css` sau `<style>` inline, consistent cu restul site-ului static.
-- Fonturi: `@import` Google Fonts (singurul host extern acceptat), `display=swap` pentru performanță.
-- Animații: doar `transform` și `opacity` (accelerate GPU), niciodată `box-shadow`/`width`/`height` direct.
-- Imagini sub fold: `loading="lazy"`.
-- Nicio librărie de iconițe externă — SVG inline.
+- Focus visible only on keyboard navigation: `:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }`.
+- Semantic HTML: `header`, `nav`, `section`, `footer`, correct `h1`→`h3` hierarchy.
+- `alt` on every image (including decorative ones — empty `alt=""` if they're truly decorative).
+- Real buttons (`<button>`), not `<div onclick>`. The form has a `<label>` for every field.
+- Target: Lighthouse Accessibility ≥90.
+
+---
+
+## 16. Implementation — constraints
+
+- **Vanilla CSS + custom properties**, no Tailwind, no shadcn, no React. A single `styles.css` file or inline `<style>`, consistent with the rest of the static site.
+- Fonts: `@import` Google Fonts (the only external host allowed), `display=swap` for performance.
+- Animations: only `transform` and `opacity` (GPU-accelerated), never `box-shadow`/`width`/`height` directly.
+- Below-the-fold images: `loading="lazy"`.
+- No external icon library — inline SVG.

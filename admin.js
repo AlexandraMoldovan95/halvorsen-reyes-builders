@@ -4,7 +4,7 @@
   var CFG = window.HR_CONFIG || {};
   if (!CFG.SUPABASE_URL || CFG.SUPABASE_URL.indexOf("TODO") !== -1) {
     document.getElementById("loginStatus").textContent =
-      "Supabase nu e configurat încă (vezi config.js / SUPABASE_SETUP.md).";
+      "Supabase isn't configured yet (see config.js / SUPABASE_SETUP.md).";
     document.getElementById("loginStatus").classList.add("error");
     return;
   }
@@ -21,16 +21,16 @@
   var logoutBtn = document.getElementById("logoutBtn");
 
   var TIP_LABELS = {
-    casa_la_cheie: "Casă la cheie",
-    renovare_completa: "Renovare completă",
-    extindere: "Extindere",
-    altul: "Altul",
+    casa_la_cheie: "Turnkey home",
+    renovare_completa: "Full renovation",
+    extindere: "Addition",
+    altul: "Other",
   };
 
   function showLeadsView(email) {
     loginView.style.display = "none";
     leadsView.style.display = "block";
-    loggedInAs.textContent = "Autentificat ca " + email;
+    loggedInAs.textContent = "Signed in as " + email;
     loadLeads();
   }
 
@@ -41,7 +41,7 @@
   }
 
   function loadLeads() {
-    leadsStatus.textContent = "Se încarcă...";
+    leadsStatus.textContent = "Loading...";
     leadsStatus.className = "form-status";
     leadsBody.innerHTML = "";
 
@@ -50,20 +50,20 @@
       .order("created_at", { ascending: false })
       .then(function (res) {
         if (res.error) {
-          // Cel mai probabil: emailul contului nu e în tabelul public.admins.
+          // Most likely cause: the account's email isn't in the public.admins table.
           leadsStatus.textContent =
-            "Nu am putut încărca cererile (" + res.error.message + "). Verifică dacă emailul contului e adăugat în tabelul admins.";
+            "Couldn't load the requests (" + res.error.message + "). Check that the account's email is added to the admins table.";
           leadsStatus.classList.add("error");
           return;
         }
-        leadsStatus.textContent = res.data.length + " cereri.";
+        leadsStatus.textContent = res.data.length + " requests.";
         if (res.data.length === 0) {
-          leadsBody.innerHTML = '<tr><td colspan="6">Încă nicio cerere.</td></tr>';
+          leadsBody.innerHTML = '<tr><td colspan="6">No requests yet.</td></tr>';
           return;
         }
         res.data.forEach(function (lead) {
           var tr = document.createElement("tr");
-          var date = new Date(lead.created_at).toLocaleString("ro-RO", {
+          var date = new Date(lead.created_at).toLocaleString("en-US", {
             day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit",
           });
           tr.innerHTML =
@@ -86,7 +86,7 @@
 
   loginForm.addEventListener("submit", function (e) {
     e.preventDefault();
-    loginStatus.textContent = "Se conectează...";
+    loginStatus.textContent = "Signing in...";
     loginStatus.className = "form-status";
 
     var email = document.getElementById("a-email").value.trim();
@@ -94,7 +94,7 @@
 
     sb.auth.signInWithPassword({ email: email, password: parola }).then(function (res) {
       if (res.error) {
-        loginStatus.textContent = "Email sau parolă greșită.";
+        loginStatus.textContent = "Incorrect email or password.";
         loginStatus.classList.add("error");
         return;
       }
