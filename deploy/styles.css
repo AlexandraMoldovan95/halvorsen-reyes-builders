@@ -784,6 +784,47 @@ textarea.field { resize: vertical; min-height: 90px; font-family: var(--font-ui)
 .btn-submit { margin-top: 1.5rem; }
 .contact-cta { margin-top: 1.5rem; }
 
+/* ===== Admin panel (admin.html) ===== */
+.admin-wrap { padding-block: 3rem 5rem; }
+.admin-card {
+  background: var(--bg);
+  border: 1px solid var(--neutral-200);
+  padding: 2rem;
+  max-width: 560px;
+  margin-inline: auto;
+}
+#leadsView.admin-card { max-width: 100%; }
+.admin-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+.admin-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.admin-table { width: 100%; border-collapse: collapse; font-family: var(--font-ui); font-size: 0.88rem; }
+.admin-table th,
+.admin-table td {
+  text-align: left;
+  padding: 0.7rem 0.9rem;
+  border-bottom: 1px solid var(--neutral-200);
+  vertical-align: top;
+}
+.admin-table th {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--neutral-500);
+}
+@media (max-width: 640px) {
+  .admin-card { padding: 1.5rem; }
+  /* Keeps columns readable instead of squishing illegibly; the wrap above
+     makes this scroll horizontally within the card on small screens
+     instead of overflowing the whole page. */
+  .admin-table { min-width: 640px; }
+}
+
 /* ===== Reduced motion ===== */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

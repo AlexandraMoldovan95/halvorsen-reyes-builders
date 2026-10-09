@@ -19,6 +19,9 @@
   var leadsBody = document.getElementById("leadsBody");
   var loggedInAs = document.getElementById("loggedInAs");
   var logoutBtn = document.getElementById("logoutBtn");
+  var demoLoginBtn = document.getElementById("demoLoginBtn");
+  var demoBadge = document.getElementById("demoBadge");
+  var DEMO_MODE = false;
 
   var TIP_LABELS = {
     casa_la_cheie: "Turnkey home",
@@ -84,6 +87,43 @@
     return div.innerHTML;
   }
 
+  /* ---------------- Demo mode ----------------
+     Lets Erik/Camila (or a recruiter) see the dashboard with sample leads,
+     with zero calls to Supabase. Useful while the real project's database
+     is paused — nothing here is read from or written to a real backend. */
+  var DEMO_LEADS = [
+    { created_at: "2026-09-10T14:32:00.000Z", nume: "Marcus Webb", email: "marcus.webb@example.com", telefon: "(555) 014-2290", tip_proiect: "casa_la_cheie", buget_estimat: "$380k–420k", mesaj: "Looking to build on a lot we just closed on in Green Point. Would love a walkthrough of a couple of your recent turnkey builds." },
+    { created_at: "2026-09-14T09:05:00.000Z", nume: "Priya Anand", email: "priya.anand@example.com", telefon: "(555) 014-7731", tip_proiect: "renovare_completa", buget_estimat: "$90k–120k", mesaj: "Our kitchen and living room need a full redo — open layout, similar to the Green Point project on your site." },
+    { created_at: "2026-09-20T17:48:00.000Z", nume: "Tom Reilly", email: "tom.reilly@example.com", telefon: "(555) 014-5508", tip_proiect: "extindere", buget_estimat: "$45k–60k", mesaj: "Want to add a covered patio in the backyard, similar to the West Lane project. Can you do a quick estimate?" },
+  ];
+
+  function showDemoLeads() {
+    DEMO_MODE = true;
+    loginView.style.display = "none";
+    leadsView.style.display = "block";
+    loggedInAs.textContent = "Signed in as demo@hr-builders.example";
+    demoBadge.style.display = "block";
+    leadsStatus.textContent = DEMO_LEADS.length + " requests. (demo data)";
+    leadsStatus.className = "form-status";
+    leadsBody.innerHTML = "";
+    DEMO_LEADS.forEach(function (lead) {
+      var tr = document.createElement("tr");
+      var date = new Date(lead.created_at).toLocaleString("en-US", {
+        day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit",
+      });
+      tr.innerHTML =
+        "<td>" + date + "</td>" +
+        "<td>" + escapeHtml(lead.nume) + "</td>" +
+        "<td>" + escapeHtml(lead.email) + "<br>" + escapeHtml(lead.telefon) + "</td>" +
+        "<td>" + escapeHtml(TIP_LABELS[lead.tip_proiect] || lead.tip_proiect) + "</td>" +
+        "<td>" + escapeHtml(lead.buget_estimat || "—") + "</td>" +
+        "<td>" + escapeHtml(lead.mesaj) + "</td>";
+      leadsBody.appendChild(tr);
+    });
+  }
+
+  demoLoginBtn.addEventListener("click", showDemoLeads);
+
   loginForm.addEventListener("submit", function (e) {
     e.preventDefault();
     loginStatus.textContent = "Signing in...";
@@ -103,6 +143,12 @@
   });
 
   logoutBtn.addEventListener("click", function () {
+    if (DEMO_MODE) {
+      DEMO_MODE = false;
+      demoBadge.style.display = "none";
+      showLoginView();
+      return;
+    }
     sb.auth.signOut();
   });
 

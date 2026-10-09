@@ -335,7 +335,7 @@
           setTimeout(closeForm, 2200);
         })
         .catch(function (err) {
-          formStatus.textContent = "Something went wrong. Try again or call us directly.";
+          formStatus.textContent = "This form can't reach our server right now — call (555) 010-2411 or email hello@hr-builders.example and Camila will get back to you directly.";
           formStatus.classList.add("error");
           console.error(err);
         })
@@ -374,6 +374,35 @@
     });
   }
   if (chatClose) chatClose.addEventListener("click", closeChat);
+
+  /* Local fallback for when the real chat backend can't be reached (e.g. the
+     project's Supabase instance is paused). Keyword-matched, not an LLM —
+     just enough to keep the demo honest and useful instead of looking
+     broken. The real fetch below is always tried first; this only runs on
+     failure, so it self-heals the moment the backend comes back. */
+  var usedChatFallbackNotice = false;
+  function localBotReply(msg) {
+    var m = msg.toLowerCase();
+    var answer;
+    if (/hour|open|schedule|when/.test(m)) {
+      answer = "We're open Monday–Friday, 8:00 AM–5:00 PM.";
+    } else if (/where|location|area|denver|radius/.test(m)) {
+      answer = "We work in Denver, Colorado and within a 50 km radius.";
+    } else if (/price|cost|budget|quote|estimate|much/.test(m)) {
+      answer = "Every project gets its own quote based on scope — the fastest way is the quote form on this page, or tell me a bit more about what you're planning.";
+    } else if (/service|turnkey|renovat|addition|build/.test(m)) {
+      answer = "We do three things: turnkey homes, full renovations, and additions — from an empty lot to handing over the keys, or just the extra space you need.";
+    } else if (/contact|phone|email|call|reach/.test(m)) {
+      answer = "Call (555) 010-2411 or email hello@hr-builders.example — Camila usually replies the same business day.";
+    } else {
+      answer = "I don't have a specific answer for that one — the quote form on this page is the fastest way to reach Camila directly, or call (555) 010-2411.";
+    }
+    if (!usedChatFallbackNotice) {
+      usedChatFallbackNotice = true;
+      return "(Our live chat backend is resting right now, so I'm answering from a short local script instead.) " + answer;
+    }
+    return answer;
+  }
 
   function appendMessage(text, who) {
     var div = document.createElement("div");
@@ -421,7 +450,7 @@
         })
         .catch(function (err) {
           typing.remove();
-          appendMessage("Something went wrong. Try again or use the quote form.", "bot");
+          appendMessage(localBotReply(msg), "bot");
           console.error(err);
         });
     });
