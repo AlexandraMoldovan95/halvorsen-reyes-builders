@@ -87,6 +87,15 @@ Added on 2026-09-24, after the assignment was submitted. The `chat` function and
 - **Verification:** the SQL was tested on local Postgres (run twice — the hourly/daily/per-email limits, the `anon` key can't call the function and can't read the table). Live: the first message showed up in `chat_usage`, and with `CHAT_LIMIT_PER_HOUR=2` the chatbot replied with the pause message at the limit; the secret was deleted after the test.
 - Setup steps: `SUPABASE_SETUP.md`, step 10.
 
+## Known limits of the chatbot
+
+What the design above does not guarantee, stated so nobody has to discover it:
+
+- **One question, one answer.** The function sends only the current message to the model (`messages: [{ role: "user", ... }]`), with no conversation history. It's simpler and cheaper, but a follow-up like "and the second one?" loses the context.
+- **Prompt injection is only guarded by the system prompt.** It tells the model to talk only about the company and to decline everything else. A determined visitor can still try to push it off-topic. What limits the damage: the reply is shown as plain text (`textContent` in `script.js`), so it can't inject HTML into the page, and the function can only return text: it has no access to the database or to anything else.
+- **CORS is not access control.** `ALLOWED_ORIGINS` (set on the live function to the site's own address) only stops *other websites' browser code* from calling the chat. A script outside a browser can still call it with the public key from `config.js`; that's what the usage limits are for.
+- **The per-visitor limit follows the IP.** A visitor who changes IP (VPN, mobile data) gets a new 20-per-hour allowance. The 300-per-day total still caps all visitors together, and with `max_tokens: 400` per reply that total is the ceiling on daily cost.
+
 ## Deviations from the brief (documented)
 
 What wasn't done exactly as in the assignment PDF / the "References and animations" guide, and why:
