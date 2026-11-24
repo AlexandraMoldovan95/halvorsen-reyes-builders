@@ -4,6 +4,10 @@
   var CFG = window.HR_CONFIG || {};
   var prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  /* Footer year (was an inline <script>; moved here so the CSP needs no inline scripts) */
+  var yearEl = document.getElementById("year");
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
+
   /* ===================== MOBILE NAV ===================== */
   var navToggle = document.getElementById("navToggle");
   var mobileNav = document.getElementById("mobileNav");

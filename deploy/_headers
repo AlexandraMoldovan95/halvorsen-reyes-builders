@@ -1,7 +1,11 @@
 # Security headers, read by Netlify on every request (works with drag-and-drop deploys too).
 # nosniff: the browser doesn't guess file types. SAMEORIGIN: other sites can't frame these pages.
 # Referrer-Policy: other sites see only this site's address, not the full page URL.
+# Content-Security-Policy: the browser runs only scripts from this site, cdnjs (GSAP) and jsdelivr
+# (supabase-js, admin page), loads styles/fonts/images only from this site, and talks only to this
+# site and the Supabase project (form + chat function). No inline scripts or style="" attributes.
 /*
   X-Content-Type-Options: nosniff
   X-Frame-Options: SAMEORIGIN
   Referrer-Policy: strict-origin-when-cross-origin
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self' https://isxacppagogxcpkftepz.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'

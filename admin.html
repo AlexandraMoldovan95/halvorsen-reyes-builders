@@ -14,37 +14,37 @@
 <header class="site-header">
   <div class="container">
     <a href="index.html" class="logo">Halvorsen <span>&amp;</span> Reyes <span>Builders</span></a>
-    <span class="eyebrow" style="margin-left:auto;">Admin panel</span>
+    <span class="eyebrow admin-header-label">Admin panel</span>
   </div>
 </header>
 
 <main class="container admin-wrap">
 
   <section id="loginView" class="admin-card">
-    <h1 class="section-title" style="font-size:1.8rem;">Login</h1>
+    <h1 class="section-title">Login</h1>
     <p class="section-lede">For Erik and Camila only. The account is created in Supabase, not here.</p>
     <form id="loginForm" novalidate>
       <div class="field-group">
         <label for="a-email">Email</label>
         <input class="field" type="email" id="a-email" name="email" required autocomplete="username">
       </div>
-      <div class="field-group" style="margin-top:1.1rem;">
+      <div class="field-group">
         <label for="a-parola">Password</label>
         <input class="field" type="password" id="a-parola" name="parola" required autocomplete="current-password">
       </div>
-      <button type="submit" class="btn btn-primary" style="margin-top:1.5rem;">Sign in</button>
+      <button type="submit" class="btn btn-primary">Sign in</button>
       <p class="form-status" id="loginStatus" role="status" aria-live="polite"></p>
     </form>
-    <button type="button" class="btn btn-secondary" id="demoLoginBtn" style="margin-top:1rem;">Login demo</button>
-    <p class="eyebrow" style="margin-top:0.8rem;">No account needed — shows sample quote requests. Nothing here touches the real database.</p>
+    <button type="button" class="btn btn-secondary" id="demoLoginBtn">Login demo</button>
+    <p class="eyebrow admin-demo-note">No account needed — shows sample quote requests. Nothing here touches the real database.</p>
   </section>
 
-  <section id="leadsView" class="admin-card" style="display:none;">
+  <section id="leadsView" class="admin-card">
     <div class="admin-head">
       <div>
-        <h1 class="section-title" style="font-size:1.8rem; margin-bottom:0.25rem;">Quote requests</h1>
+        <h1 class="section-title">Quote requests</h1>
         <p class="eyebrow" id="loggedInAs"></p>
-        <p class="eyebrow" id="demoBadge" style="display:none; color:var(--accent); font-weight:700;">DEMO MODE — sample data, nothing saved</p>
+        <p class="eyebrow" id="demoBadge">DEMO MODE — sample data, nothing saved</p>
       </div>
       <button class="btn btn-secondary" id="logoutBtn">Sign out</button>
     </div>
