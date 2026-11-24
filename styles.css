@@ -700,9 +700,12 @@ textarea.field { resize: vertical; min-height: 90px; font-family: var(--font-ui)
 .form-status.error { color: var(--accent); }
 
 /* ===== Chatbot ===== */
+/* Bubble and panel start 6rem up: on free sites Netlify adds a "Powered by
+   Netlify" badge (always on top) in the bottom-right corner, and at 1.25rem it
+   covered the bubble and the panel's send button. */
 .chat-launcher {
   position: fixed;
-  bottom: 1.25rem; right: 1.25rem;
+  bottom: 6rem; right: 1.25rem;
   z-index: 45;
   width: 56px; height: 56px;
   border-radius: 0;
@@ -710,17 +713,21 @@ textarea.field { resize: vertical; min-height: 90px; font-family: var(--font-ui)
   color: var(--bg);
   border: 1px solid var(--bg);
   display: flex; align-items: center; justify-content: center;
-  cursor: pointer;
+  cursor: grab;
   box-shadow: 4px 4px 0 0 rgba(17,17,17,0.3);
+  /* draggable (script.js): on touch screens the finger moves the bubble, not the page */
+  touch-action: none;
+  -webkit-user-select: none; user-select: none;
 }
-.chat-launcher img { width: 32px; height: 32px; object-fit: cover; }
+.chat-launcher.dragging { cursor: grabbing; }
+.chat-launcher img { width: 32px; height: 32px; object-fit: cover; pointer-events: none; -webkit-user-drag: none; }
 
 .chat-panel {
   position: fixed;
-  bottom: 1.25rem; right: 1.25rem;
+  bottom: 6rem; right: 1.25rem;
   z-index: 46;
   width: min(360px, calc(100vw - 2rem));
-  height: min(500px, calc(100vh - 3rem));
+  height: min(500px, calc(100vh - 7.5rem));
   background: var(--bg);
   border: 1px solid var(--ink);
   display: none;

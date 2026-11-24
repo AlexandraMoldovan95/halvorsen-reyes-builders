@@ -355,8 +355,44 @@
   var chatForm = document.getElementById("chatForm");
   var chatInput = document.getElementById("chatInput");
 
+  /* The bubble can be dragged anywhere on the page (mouse, finger or pen).
+     A move shorter than DRAG_THRESHOLD counts as a click and opens the chat;
+     a longer one moves the bubble, and the click that ends it is ignored.
+     The position isn't saved: every visit starts from the CSS default. */
+  var DRAG_THRESHOLD = 6; // px
+  var EDGE = 8;           // px kept free between the bubble/panel and the window edge
+  var launcherMoved = false;
+  var drag = null;
+  var ignoreClickUntil = 0;
+
+  function clamp(value, min, max) { return Math.min(Math.max(value, min), max); }
+
+  // Puts a fixed element at (left, top), kept fully inside the window.
+  function placeAt(el, left, top) {
+    var maxLeft = document.documentElement.clientWidth - el.offsetWidth - EDGE;
+    var maxTop = window.innerHeight - el.offsetHeight - EDGE;
+    el.style.left = clamp(left, EDGE, Math.max(EDGE, maxLeft)) + "px";
+    el.style.top = clamp(top, EDGE, Math.max(EDGE, maxTop)) + "px";
+    el.style.right = "auto";
+    el.style.bottom = "auto";
+  }
+
+  // Once the bubble has been moved, the panel opens next to it: above it if
+  // there's room (below otherwise), on the side of the window the bubble is on.
+  // Until then the panel keeps its CSS position.
+  function placePanel() {
+    if (!launcherMoved || !chatPanel.classList.contains("open")) return;
+    var b = chatLauncher.getBoundingClientRect();
+    var w = chatPanel.offsetWidth, h = chatPanel.offsetHeight, gap = 8;
+    var onRight = b.left + b.width / 2 > document.documentElement.clientWidth / 2;
+    var left = onRight ? b.right - w : b.left;
+    var top = b.top - gap - h >= EDGE ? b.top - gap - h : b.bottom + gap;
+    placeAt(chatPanel, left, top);
+  }
+
   function openChat() {
     chatPanel.classList.add("open");
+    placePanel();
     if (chatLauncher) chatLauncher.setAttribute("aria-expanded", "true");
     chatInput.focus();
   }
@@ -368,9 +404,52 @@
       chatLauncher.focus();
     }
   }
+  function toggleChat() {
+    chatPanel.classList.contains("open") ? closeChat() : openChat();
+  }
   if (chatLauncher) {
+    chatLauncher.addEventListener("pointerdown", function (e) {
+      if (e.button !== 0) return; // main mouse button, finger or pen only
+      var b = chatLauncher.getBoundingClientRect();
+      drag = { id: e.pointerId, x: e.clientX, y: e.clientY,
+               dx: e.clientX - b.left, dy: e.clientY - b.top, moved: false };
+      chatLauncher.setPointerCapture(e.pointerId); // keep getting moves even off the bubble
+    });
+    chatLauncher.addEventListener("pointermove", function (e) {
+      if (!drag || e.pointerId !== drag.id) return;
+      if (!drag.moved && Math.abs(e.clientX - drag.x) + Math.abs(e.clientY - drag.y) < DRAG_THRESHOLD) return;
+      drag.moved = true;
+      launcherMoved = true;
+      chatLauncher.classList.add("dragging");
+      placeAt(chatLauncher, e.clientX - drag.dx, e.clientY - drag.dy);
+      placePanel(); // an open panel follows the bubble
+    });
+    var endDrag = function (e) {
+      if (!drag || e.pointerId !== drag.id) return;
+      var wasDrag = drag.moved;
+      chatLauncher.classList.remove("dragging");
+      drag = null;
+      // The browser's own "click" that follows is ignored either way: after a drag
+      // it isn't a click, and after a tap the chat is toggled right here (on phones
+      // the browser sometimes skips that click, e.g. right after a quick flick).
+      ignoreClickUntil = Date.now() + 500;
+      if (!wasDrag && e.type === "pointerup") toggleChat();
+    };
+    chatLauncher.addEventListener("pointerup", endDrag);
+    chatLauncher.addEventListener("pointercancel", endDrag);
+
+    // Keyboard (Enter / Space) still arrives as a plain click.
     chatLauncher.addEventListener("click", function () {
-      chatPanel.classList.contains("open") ? closeChat() : openChat();
+      if (Date.now() < ignoreClickUntil) { ignoreClickUntil = 0; return; }
+      toggleChat();
+    });
+
+    // A smaller window (or a phone turned sideways) must not leave the bubble outside it.
+    window.addEventListener("resize", function () {
+      if (!launcherMoved) return;
+      var b = chatLauncher.getBoundingClientRect();
+      placeAt(chatLauncher, b.left, b.top);
+      placePanel();
     });
   }
   if (chatClose) chatClose.addEventListener("click", closeChat);
