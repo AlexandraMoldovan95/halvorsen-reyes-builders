@@ -375,8 +375,9 @@
   }
   if (chatClose) chatClose.addEventListener("click", closeChat);
 
-  /* Local fallback for when the real chat backend can't be reached (e.g. the
-     project's Supabase instance is paused). Keyword-matched, not an LLM —
+  /* Local fallback for when the real chat backend can't answer (the AI key is
+     switched off between live demos, or the project's Supabase instance is
+     paused). Keyword-matched, not an LLM —
      just enough to keep the demo honest and useful instead of looking
      broken. The real fetch below is always tried first; this only runs on
      failure, so it self-heals the moment the backend comes back. */
@@ -399,7 +400,7 @@
     }
     if (!usedChatFallbackNotice) {
       usedChatFallbackNotice = true;
-      return "(Our live chat backend is resting right now, so I'm answering from a short local script instead.) " + answer;
+      return "(The AI assistant is switched off between live demos to keep running costs at zero, so I'm answering from a short local script instead.) " + answer;
     }
     return answer;
   }

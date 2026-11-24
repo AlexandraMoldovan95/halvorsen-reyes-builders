@@ -4,6 +4,8 @@ Public, one-page site for the fictional construction company Halvorsen & Reyes B
 
 **Live:** https://halvorsen-reyes-builders-655f70.netlify.app/
 
+> **AI chatbot status:** the Anthropic key is switched off between live demos to keep running costs at zero, so the chat answers from a short scripted fallback, labelled as such on the page. The quote form and the database are live.
+
 > The code in this folder is one step ahead of the live site (performance optimizations that couldn't be published to production yet) — see the [Performance (Lighthouse)](#performance-lighthouse) section.
 
 ## Stack
