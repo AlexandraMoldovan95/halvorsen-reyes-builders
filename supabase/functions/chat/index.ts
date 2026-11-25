@@ -58,8 +58,22 @@ if (ALLOWED_ORIGINS.length === 0) {
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
 const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 // Defaults can be changed via secrets, with no code redeploy.
-const LIMIT_PER_HOUR = Number(Deno.env.get("CHAT_LIMIT_PER_HOUR") || 20);  // messages / visitor / hour
-const LIMIT_PER_DAY = Number(Deno.env.get("CHAT_LIMIT_PER_DAY") || 300);   // messages / day, all visitors
+// A secret that isn't a positive whole number (a typo like "2O") falls back to the
+// default: Number("2O") is NaN, which JSON turns into null, and the limit would be lost.
+function limitFromSecret(name: string, fallback: number): number {
+  const raw = Deno.env.get(name);
+  if (!raw) return fallback;
+  const value = Number(raw);
+  if (Number.isInteger(value) && value > 0) return value;
+  console.warn(`${name}="${raw}" is not a positive whole number; using ${fallback}.`);
+  return fallback;
+}
+const LIMIT_PER_HOUR = limitFromSecret("CHAT_LIMIT_PER_HOUR", 20);  // messages / visitor / hour
+const LIMIT_PER_DAY = limitFromSecret("CHAT_LIMIT_PER_DAY", 300);   // messages / day, all visitors
+
+// How long each outside call may take before the function gives up and answers anyway.
+const LIMIT_CHECK_TIMEOUT_MS = 5_000;
+const ANTHROPIC_TIMEOUT_MS = 25_000;
 
 const LIMIT_REPLY =
   "We've gotten a lot of messages in a short time, so chat is paused for the moment. " +
@@ -89,6 +103,7 @@ async function chatAllowed(visitor: string): Promise<boolean> {
       method: "POST",
       headers,
       body: JSON.stringify({ p_visitor: visitor, p_per_hour: LIMIT_PER_HOUR, p_per_day: LIMIT_PER_DAY }),
+      signal: AbortSignal.timeout(LIMIT_CHECK_TIMEOUT_MS),  // a slow check counts as failed (catch below)
     });
     if (!res.ok) {
       console.error("Rate limit check failed:", res.status, await res.text());
@@ -99,6 +114,39 @@ async function chatAllowed(visitor: string): Promise<boolean> {
     console.error("Rate limit check failed:", err);
     return false;
   }
+}
+
+const NO_ANSWER_REPLY = "I don't have an answer for that right now.";
+const DECLINE_REPLY =
+  "I can only help with questions about Halvorsen & Reyes Builders. " +
+  "To talk about your project, use the \"Request a quote\" form or email us at hello@hr-builders.example.";
+
+// Turns the Messages API response into the text shown in the chat, and says in the logs
+// when the model stopped for a reason other than finishing its answer.
+// deno-lint-ignore no-explicit-any
+function replyFrom(data: any): string {
+  const text = (Array.isArray(data?.content) ? data.content : [])
+    .filter((block: { type?: string }) => block?.type === "text")
+    .map((block: { text?: string }) => block.text ?? "")
+    .join("")
+    .trim();
+  const stop = data?.stop_reason;
+
+  if (stop === "refusal") {
+    console.warn("[chat] the model refused this message; sending the standard decline");
+    return DECLINE_REPLY;
+  }
+  if (stop === "max_tokens") {
+    // Cut mid-answer: keep the complete sentences, never half a sentence.
+    console.warn("[chat] reply cut at max_tokens");
+    const lastEnd = Math.max(text.lastIndexOf(". "), text.lastIndexOf("! "), text.lastIndexOf("? "),
+      /[.!?]$/.test(text) ? text.length - 1 : -1);
+    return lastEnd > 0 ? text.slice(0, lastEnd + 1) : NO_ANSWER_REPLY;
+  }
+  if (stop && stop !== "end_turn" && stop !== "stop_sequence") {
+    console.warn("[chat] unexpected stop_reason:", stop);
+  }
+  return text || NO_ANSWER_REPLY;
 }
 
 // Fails closed: the Allow-Origin header is sent only for an origin on the list. With no
@@ -149,20 +197,32 @@ Deno.serve(async (req: Request) => {
       });
     }
 
-    const anthropicRes = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "x-api-key": ANTHROPIC_API_KEY,
-        "anthropic-version": "2023-06-01",
-      },
-      body: JSON.stringify({
-        model: ANTHROPIC_MODEL,
-        max_tokens: 400,
-        system: SYSTEM_PROMPT,
-        messages: [{ role: "user", content: message }],
-      }),
-    });
+    let anthropicRes: Response;
+    try {
+      anthropicRes = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "x-api-key": ANTHROPIC_API_KEY,
+          "anthropic-version": "2023-06-01",
+        },
+        body: JSON.stringify({
+          model: ANTHROPIC_MODEL,
+          max_tokens: 400,
+          system: SYSTEM_PROMPT,
+          messages: [{ role: "user", content: message }],
+        }),
+        signal: AbortSignal.timeout(ANTHROPIC_TIMEOUT_MS),
+      });
+    } catch (err) {
+      // Without a timeout a stuck call would hold the visitor's chat open until the platform cut it.
+      const timedOut = err instanceof DOMException && err.name === "TimeoutError";
+      console.error(timedOut ? `Anthropic API timed out after ${ANTHROPIC_TIMEOUT_MS} ms` : "Anthropic API unreachable:", err);
+      return new Response(JSON.stringify({ error: "Couldn't generate a reply right now." }), {
+        status: timedOut ? 504 : 502,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     if (!anthropicRes.ok) {
       const errText = await anthropicRes.text();
@@ -174,7 +234,7 @@ Deno.serve(async (req: Request) => {
     }
 
     const data = await anthropicRes.json();
-    const reply = data?.content?.[0]?.text?.trim() || "I don't have an answer for that right now.";
+    const reply = replyFrom(data);
 
     return new Response(JSON.stringify({ reply }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
