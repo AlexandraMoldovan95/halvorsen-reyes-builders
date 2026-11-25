@@ -53,7 +53,7 @@ supabase secrets set ANTHROPIC_API_KEY=sk-ant-...
 ```
 
 3. After deploying to Netlify (step 9), also add:
-   - `ALLOWED_ORIGINS` = the site's URL, no trailing `/`, e.g. `https://your-site.netlify.app`. You can list several, comma-separated (e.g. also `http://localhost:5500` for local testing). As long as it's not set, CORS stays open (`*`).
+   - `ALLOWED_ORIGINS` = the site's URL, no trailing `/`, e.g. `https://your-site.netlify.app`. You can list several, comma-separated (e.g. also `http://localhost:5500` for local testing). As long as it's not set, no website can call the chat from a browser (it fails closed).
 4. Optional: a **monthly spending limit** in the Anthropic Console (Settings → Limits). The in-code cost protection is covered in step 10 (rate limits).
 
 ## 6. Test locally, before deploying to Netlify

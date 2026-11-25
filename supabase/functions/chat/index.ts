@@ -47,7 +47,7 @@ const ALLOWED_ORIGINS = (Deno.env.get("ALLOWED_ORIGINS") || "")
   .filter(Boolean);
 
 if (ALLOWED_ORIGINS.length === 0) {
-  console.warn("ALLOWED_ORIGINS is not set — CORS stays open (*).");
+  console.warn("ALLOWED_ORIGINS is not set — no website can call the chat from a browser until it is.");
 }
 
 // ------------------------------------------------------------
@@ -101,16 +101,17 @@ async function chatAllowed(visitor: string): Promise<boolean> {
   }
 }
 
+// Fails closed: the Allow-Origin header is sent only for an origin on the list. With no
+// list, or another site, there is no header and the browser blocks the call. (It used to
+// fall back to "*" when the secret was missing.)
 function buildCorsHeaders(req: Request): Record<string, string> {
   const origin = req.headers.get("origin") || "";
-  const allowOrigin = ALLOWED_ORIGINS.length === 0
-    ? "*"
-    : ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
-  return {
-    "Access-Control-Allow-Origin": allowOrigin,
+  const headers: Record<string, string> = {
     "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
     "Vary": "Origin",
   };
+  if (ALLOWED_ORIGINS.includes(origin)) headers["Access-Control-Allow-Origin"] = origin;
+  return headers;
 }
 
 Deno.serve(async (req: Request) => {
