@@ -33,6 +33,7 @@ html {
   html { scroll-padding-top: 77px; }
 }
 :root {
+  --portfolio-bar-h: 32px;
   --bg: #F9F9F7;
   --ink: #111111;
   --muted: #E5E5E0;
@@ -171,6 +172,28 @@ section { position: relative; }
 .btn-ghost:hover { background: var(--neutral-100); }
 
 /* ===== Header ===== */
+/* Thin bar above the sticky header: the way back to the author's portfolio. It scrolls
+   away; the header stays. Its height is subtracted from the hero (see .hero). The label
+   names the author, because the site's own nav already has a "Portfolio" link. */
+.portfolio-bar {
+  background: var(--ink);
+  height: var(--portfolio-bar-h);
+  display: flex;
+  align-items: center;
+}
+.portfolio-bar .container { width: 100%; }
+.portfolio-bar a {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--bg);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.portfolio-bar a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.portfolio-bar a:focus-visible { outline: 2px solid var(--bg); outline-offset: 3px; }
+
 .site-header {
   position: sticky;
   top: 0;
@@ -245,8 +268,9 @@ section { position: relative; }
   position: relative;
   /* 100svh would overflow the viewport by exactly the sticky header's height
      above (~80px) — that left the hero-actions buttons partially below the
-     fold on load. We subtract the header, so hero + header fit exactly. */
-  height: calc(100svh - 80px);
+     fold on load. We subtract the header (and the portfolio bar above it),
+     so bar + header + hero fit exactly. */
+  height: calc(100svh - 80px - var(--portfolio-bar-h));
   min-height: 480px;
   display: flex;
   align-items: flex-end;
