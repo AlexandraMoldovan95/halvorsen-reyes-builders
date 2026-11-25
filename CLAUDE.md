@@ -31,7 +31,7 @@
 
 ## Stack & code rules
 
-- No framework, no build step. One `index.html`, `styles.css`, `script.js`, `config.js` (Supabase URL + anon key).
+- No framework, no build step. One `index.html`, `styles.css`, `script.js`, `config.js` (Supabase URL + anon key), and `logic.js` for the pure logic with no page or network behind it (form checks, the row sent to `leads`, the chatbot's fallback answers), unit-tested in `tests/` (`node --test "tests/*.test.js"`, run in CI). Any new function without DOM goes in `logic.js`, with a test. Changes to site files are copied into `deploy/` too.
 - Animations: GSAP + ScrollTrigger (cdnjs CDN). No generic gradients, no Inter as the main display font, no emoji in the UI.
 - Design: see `DESIGN.md` — black/white + editorial red palette, Playfair Display + Lora + JetBrains Mono, square corners (0 border-radius), portfolio photos **in color**, never grayscale.
 - The portfolio is an arrow-driven (click) carousel, not horizontal scroll — an explicit decision; page scroll stays strictly vertical everywhere.

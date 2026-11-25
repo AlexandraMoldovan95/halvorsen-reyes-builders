@@ -276,16 +276,8 @@
     }
   }
 
-  function validateForm(data) {
-    var errors = {};
-    if (!data.nume || data.nume.trim().length < 2) errors["f-nume"] = "Enter your full name.";
-    if (!data.telefon || data.telefon.replace(/\D/g, "").length < 7) errors["f-telefon"] = "Invalid phone number.";
-    var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!data.email || !emailRe.test(data.email)) errors["f-email"] = "Invalid email address.";
-    if (!data.tip_proiect) errors["f-tip"] = "Choose a project type.";
-    if (!data.mesaj || data.mesaj.trim().length < 10) errors["f-mesaj"] = "Give us a few more words (min. 10 characters).";
-    return errors;
-  }
+  /* The checks themselves (validateLeadForm), the row sent to Supabase (buildLeadPayload) and
+     isBackendConfigured are in logic.js, with tests in tests/logic.test.js. */
 
   if (leadForm) {
     leadForm.addEventListener("submit", function (e) {
@@ -296,7 +288,7 @@
 
       var fd = new FormData(leadForm);
       var data = Object.fromEntries(fd.entries());
-      var errors = validateForm(data);
+      var errors = validateLeadForm(data);
 
       if (Object.keys(errors).length > 0) {
         Object.keys(errors).forEach(function (id) { setFieldError(id, errors[id]); });
@@ -305,7 +297,7 @@
         return;
       }
 
-      if (!CFG.SUPABASE_URL || CFG.SUPABASE_URL.indexOf("TODO") !== -1) {
+      if (!isBackendConfigured(CFG)) {
         formStatus.textContent = "The form isn't connected to Supabase yet (see config.js).";
         formStatus.classList.add("error");
         return;
@@ -322,14 +314,7 @@
           Authorization: "Bearer " + CFG.SUPABASE_ANON_KEY,
           Prefer: "return=minimal",
         },
-        body: JSON.stringify({
-          nume: data.nume.trim(),
-          email: data.email.trim(),
-          telefon: data.telefon.trim(),
-          tip_proiect: data.tip_proiect,
-          buget_estimat: data.buget_estimat || null,
-          mesaj: data.mesaj.trim(),
-        }),
+        body: JSON.stringify(buildLeadPayload(data)),
       })
         .then(function (res) {
           if (!res.ok) throw new Error("Server error: " + res.status);
@@ -466,24 +451,10 @@
      failure, so it self-heals the moment the backend comes back. */
   var usedChatFallbackNotice = false;
   function localBotReply(msg) {
-    var m = msg.toLowerCase();
-    var answer;
-    if (/hour|open|schedule|when/.test(m)) {
-      answer = "We're open Monday–Friday, 8:00 AM–5:00 PM.";
-    } else if (/where|location|area|denver|radius/.test(m)) {
-      answer = "We work in Denver, Colorado and within a 50 km radius.";
-    } else if (/price|cost|budget|quote|estimate|much/.test(m)) {
-      answer = "Every project gets its own quote based on scope — the fastest way is the quote form on this page, or tell me a bit more about what you're planning.";
-    } else if (/service|turnkey|renovat|addition|build/.test(m)) {
-      answer = "We do three things: turnkey homes, full renovations, and additions — from an empty lot to handing over the keys, or just the extra space you need.";
-    } else if (/contact|phone|email|call|reach/.test(m)) {
-      answer = "Call (555) 010-2411 or email hello@hr-builders.example — Camila usually replies the same business day.";
-    } else {
-      answer = "I don't have a specific answer for that one — the quote form on this page is the fastest way to reach Camila directly, or call (555) 010-2411.";
-    }
+    var answer = localBotAnswer(msg);   // the keyword answers: logic.js
     if (!usedChatFallbackNotice) {
       usedChatFallbackNotice = true;
-      return "(The AI assistant is switched off between live demos to keep running costs at zero, so I'm answering from a short local script instead.) " + answer;
+      return CHAT_FALLBACK_NOTICE + answer;
     }
     return answer;
   }
@@ -508,7 +479,7 @@
       appendMessage(msg, "user");
       chatInput.value = "";
 
-      if (!CFG.SUPABASE_URL || CFG.SUPABASE_URL.indexOf("TODO") !== -1) {
+      if (!isBackendConfigured(CFG)) {
         appendMessage("Chat isn't connected to the backend yet (see config.js and SUPABASE_SETUP.md).", "bot");
         return;
       }

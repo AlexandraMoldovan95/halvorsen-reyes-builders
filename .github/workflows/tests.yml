@@ -1,0 +1,15 @@
+# Runs the unit tests for logic.js (quote form checks, the row sent to Supabase, the chatbot's
+# local fallback) on every push and pull request. Plain Node, no packages, no Supabase.
+name: tests
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  logic:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --test "tests/*.test.js"

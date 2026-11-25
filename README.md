@@ -20,8 +20,10 @@ Public, one-page site for the fictional construction company Halvorsen & Reyes B
 ```
 index.html              the site (one page)
 styles.css               styles, tokens from DESIGN.md
-script.js                mobile nav, GSAP animations, form, chatbot
+logic.js                 the pure logic (no page, no network): form checks, the row sent, chatbot fallback answers
+script.js                mobile nav, GSAP animations, form, chatbot (the page side)
 config.js                Supabase URL + anon key (fill in after setup)
+tests/                   unit tests for logic.js (node --test)
 images/                  optimized photos (projects + team)
 fonts/                   the site's fonts (latin + diacritics subset), OFL license
 admin.html, admin.js     admin panel (Erik & Camila) — login + request list, outside the brief
@@ -29,9 +31,17 @@ supabase/schema.sql       leads table + RLS, admins table + RLS for the admin pa
 supabase/functions/chat/  Edge Function for the chatbot (with a message limit)
 supabase/rate_limits.sql  usage limits: chatbot 20/hour/visitor + 300/day, form 30/hour + 3/day/email
 SUPABASE_SETUP.md         manual setup steps (one time)
-deploy/                   a copy with ONLY the site's files, for Netlify: `netlify deploy --prod --dir deploy`
+deploy/                   a copy with ONLY the site's files, for Netlify: `netlify deploy --prod --dir deploy` (keep index.html, styles.css, logic.js, script.js, config.js identical to the root ones)
 CLAUDE.md, DESIGN.md      context and design decisions for Claude Code
 ```
+
+## Tests
+
+```bash
+node --test "tests/*.test.js"
+```
+
+13 unit tests for `logic.js`: the quote form's checks (all five required fields, phone numbers with spaces or brackets, what counts as an email, spaces not counting toward the minimum length), the row sent to Supabase (trimmed, an unchosen budget sent as null, only the six table columns whatever else the form holds), the check for an unconfigured `config.js`, and the chatbot's local fallback (cost questions never get a price, only the way to a quote). Plain Node, nothing to install, no Supabase; they run in CI on every push. The server side (RLS on `leads`, the `chat` function and its limits) was checked on the live project, see the acceptance test below.
 
 ## Quick setup
 
