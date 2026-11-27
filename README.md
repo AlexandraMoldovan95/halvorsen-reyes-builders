@@ -1,5 +1,7 @@
 # Halvorsen & Reyes Builders — site
 
+![Halvorsen & Reyes Builders: the site's first screen, with the headline "Turnkey homes, built to last." and the Request a quote button](docs/screenshot.jpg)
+
 Public, one-page site for the fictional construction company Halvorsen & Reyes Builders (Denver, CO). "Vibe Coding" theme — stepIT.
 
 **Live:** https://halvorsen-reyes-builders-655f70.netlify.app/
@@ -33,6 +35,7 @@ supabase/rate_limits.sql  usage limits: chatbot 20/hour/visitor + 300/day, form 
 SUPABASE_SETUP.md         manual setup steps (one time)
 deploy/                   a copy with ONLY the site's files, for Netlify: `netlify deploy --prod --dir deploy` (keep index.html, styles.css, logic.js, script.js, config.js identical to the root ones)
 CLAUDE.md, DESIGN.md      context and design decisions for Claude Code
+docs/screenshot.jpg       the picture at the top of this README (not part of the site)
 ```
 
 ## Tests
