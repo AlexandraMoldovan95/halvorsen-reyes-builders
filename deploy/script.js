@@ -324,7 +324,7 @@
           setTimeout(closeForm, 2200);
         })
         .catch(function (err) {
-          formStatus.textContent = "This form can't reach our server right now — call (555) 010-2411 or email hello@hr-builders.example and Camila will get back to you directly.";
+          formStatus.textContent = "This form can't reach our server right now. Call (555) 010-2411 or email hello@hr-builders.example and Camila will get back to you directly.";
           formStatus.classList.add("error");
           console.error(err);
         })

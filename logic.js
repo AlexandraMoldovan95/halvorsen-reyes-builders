@@ -45,13 +45,13 @@ function localBotAnswer(msg) {
   } else if (/where|location|area|denver|radius/.test(m)) {
     return "We work in Denver, Colorado and within a 50 km radius.";
   } else if (/price|cost|budget|quote|estimate|much/.test(m)) {
-    return "Every project gets its own quote based on scope — the fastest way is the quote form on this page, or tell me a bit more about what you're planning.";
+    return "Every project gets its own quote based on scope. The fastest way is the quote form on this page, or tell me a bit more about what you're planning.";
   } else if (/service|turnkey|renovat|addition|build/.test(m)) {
-    return "We do three things: turnkey homes, full renovations, and additions — from an empty lot to handing over the keys, or just the extra space you need.";
+    return "We do three things: turnkey homes, full renovations, and additions: from an empty lot to handing over the keys, or just the extra space you need.";
   } else if (/contact|phone|email|call|reach/.test(m)) {
-    return "Call (555) 010-2411 or email hello@hr-builders.example — Camila usually replies the same business day.";
+    return "Call (555) 010-2411 or email hello@hr-builders.example. Camila usually replies the same business day.";
   }
-  return "I don't have a specific answer for that one — the quote form on this page is the fastest way to reach Camila directly, or call (555) 010-2411.";
+  return "I don't have a specific answer for that one. The quote form on this page is the fastest way to reach Camila directly, or call (555) 010-2411.";
 }
 
 /* In Node (the tests) `module` exists and the functions are exported; in the browser it
