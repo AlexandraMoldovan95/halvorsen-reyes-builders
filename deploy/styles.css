@@ -585,6 +585,9 @@ section { position: relative; }
   color: var(--neutral-600);
   padding: 0.6rem 0.6rem;
 }
+/* ~75 characters per line at most (it measured ~83 at 1440 px); em, not ch,
+   for the same reason as .hero-title: ch is the width of "0", not an average letter. */
+.team-copy > p:first-of-type { max-width: 35em; }
 .team-copy > p:first-of-type::first-letter {
   font-family: var(--font-display);
   font-size: 3.8rem;

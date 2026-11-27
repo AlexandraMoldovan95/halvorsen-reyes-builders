@@ -52,7 +52,7 @@ Contrast: black on `--bg` >17:1 (AAA). Red on `--bg` >5:1 (AA) — never put red
 - **H1 (Hero)** — `--font-display`, `clamp(2.75rem, 6vw, 7rem)`, `line-height: 0.95`, `letter-spacing: -0.02em`. One H1 per page, in the hero.
 - **H2 (sections)** — `--font-display`, `clamp(2rem, 4vw, 3rem)`, `font-weight: 800`.
 - **H3 (card/project titles)** — `--font-display`, `clamp(1.4rem, 2.5vw, 1.75rem)`, `font-weight: 700`.
-- **Body** — `--font-body`, `1rem–1.125rem`, `line-height: 1.65`.
+- **Body** — `--font-body`, `1rem–1.125rem`, `line-height: 1.65`. As built: the longer texts (the team story, the project descriptions) use Lora; the short supporting texts (hero subtitle, section ledes, service card texts, founder bios, contact text) use `--font-ui` (Inter), as do the form and the chat. Body paragraphs stay under ~75 characters per line.
 - **Metadata/labels** (e.g. "Est. 2011", phone, hours) — `--font-mono`, `0.75rem`, uppercase, `letter-spacing: 0.15em`.
 - Navigation, buttons, UI labels → `--font-ui`, uppercase, `letter-spacing: 0.1em`.
 - Titles/body → sentence case, never ALL CAPS on full sentences.
