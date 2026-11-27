@@ -169,7 +169,7 @@ Visual validation: an invalid field → `border-bottom-color: var(--accent)` + a
 
 No external library (avoids an extra dependency on a static site with no build step). Inline SVG, `stroke-width: 1.5`, `stroke: var(--ink)`, `fill: none`, standard `24×24` size / small `16×16`. In reversed sections (black background), `stroke: var(--bg)`.
 
-Optional container for service icons: a box with a `1px solid var(--ink)` border, `48×48px`, hover → black background + white icon.
+Service icons: no container. The icon sits on the title's line, `28×28px`, `stroke: var(--accent)`, with the text under both (until 27 Nov 2026 it was a `48×48px` box with a `1px solid var(--ink)` border above the title, a shape AI site generators use everywhere).
 
 ---
 
