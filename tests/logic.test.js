@@ -1,5 +1,5 @@
 // Tests for logic.js: the quote form's checks, the row sent to Supabase, the config check,
-// the chatbot's local fallback answers, and the photo viewer's next/previous step.
+// the chatbot's local fallback answers, the photo viewer's next/previous step, and the theme.
 // No browser, no network, no Supabase.
 // Run:  node --test tests/
 const test = require("node:test");
@@ -109,4 +109,21 @@ test("with one photo or none, the viewer stays on it", () => {
   assert.equal(L.stepPhoto(0, 1, 1), 0);
   assert.equal(L.stepPhoto(0, -1, 1), 0);
   assert.equal(L.stepPhoto(0, 1, 0), 0);
+});
+
+// ---------- the theme ----------
+
+test("a saved choice wins over the system setting", () => {
+  assert.equal(L.pickTheme("light", true), "light");
+  assert.equal(L.pickTheme("dark", false), "dark");
+});
+
+test("with nothing saved, the system setting decides", () => {
+  assert.equal(L.pickTheme(null, true), "dark");
+  assert.equal(L.pickTheme(null, false), "light");
+});
+
+test("a saved value that isn't dark or light is ignored", () => {
+  assert.equal(L.pickTheme("purple", true), "dark");
+  assert.equal(L.pickTheme("", false), "light");
 });

@@ -1,6 +1,7 @@
 /* Halvorsen & Reyes Builders: the pure logic (no DOM, no network), shared by the page and
-   the tests. Loaded with <script defer> before script.js, so these are globals there; in Node
-   (tests/logic.test.js) the same file is loaded with require(). */
+   the tests. Loaded in <head>, before theme-init.js (which needs pickTheme before the page is
+   drawn) and before script.js, so these are globals there; in Node (tests/logic.test.js) the
+   same file is loaded with require(). */
 
 /* The quote form's checks. Returns { fieldId: message } for each field that fails;
    an empty object means the request can be sent. */
@@ -61,10 +62,17 @@ function stepPhoto(index, delta, count) {
   return (((index + delta) % count) + count) % count;
 }
 
+/* The theme to show: the visitor's saved choice ("dark" or "light", from the header
+   button) wins; anything else, including nothing saved yet, follows the system setting. */
+function pickTheme(saved, systemPrefersDark) {
+  if (saved === "dark" || saved === "light") return saved;
+  return systemPrefersDark ? "dark" : "light";
+}
+
 /* In Node (the tests) `module` exists and the functions are exported; in the browser it
    doesn't, so this is skipped and everything above stays a plain global for script.js. */
 if (typeof module !== "undefined" && module.exports) {
   module.exports = { validateLeadForm: validateLeadForm, buildLeadPayload: buildLeadPayload,
                      isBackendConfigured: isBackendConfigured, CHAT_FALLBACK_NOTICE: CHAT_FALLBACK_NOTICE,
-                     localBotAnswer: localBotAnswer, stepPhoto: stepPhoto };
+                     localBotAnswer: localBotAnswer, stepPhoto: stepPhoto, pickTheme: pickTheme };
 }

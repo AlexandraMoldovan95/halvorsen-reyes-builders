@@ -18,21 +18,20 @@ Vibe: solid, direct, trustworthy — the kind of company that hands over the job
 
 ## 2. Colors
 
-Single mode — light, permanent (no dark mode).
+Two modes: light (the default) and dark, the same newspaper printed in reverse. The header button switches between them and remembers the choice; on a first visit the site follows the system setting. (Until 27 Nov 2026 the site was light only.)
 
-| Token | Value | Role |
-|---|---|---|
-| `--bg` | `#F9F9F7` | Background (warm white, not pure white — simulates paper/blueprint) |
-| `--ink` | `#111111` | Main text + borders (deep black, not `#000`) |
-| `--muted` | `#E5E5E0` | Secondary borders, subtle backgrounds |
-| `--accent` | `#CC0000` | Editorial red — **used sparingly**: CTAs, badges, hover. 95%+ of the site is black/white |
-| `--neutral-100` | `#F5F5F5` | Hover backgrounds |
-| `--neutral-200` | `#E5E5E5` | Image placeholders |
-| `--neutral-500` | `#737373` | Metadata, captions |
-| `--neutral-600` | `#525252` | Body text variations |
-| `--neutral-700` | `#404040` | Subtitles |
+| Token | Light | Dark | Role |
+|---|---|---|---|
+| `--bg` | `#F9F9F7` | `#141414` | Background (warm white, not pure white — simulates paper/blueprint) |
+| `--ink` | `#111111` | `#F0EFEA` | Main text + borders (deep black, not `#000`) |
+| `--muted` | `#E5E5E0` | `#3A3A37` | Secondary borders, subtle backgrounds |
+| `--accent` | `#CC0000` | `#FF5A4D` | Editorial red — **used sparingly**: CTAs, badges, hover. 95%+ of the site is black/white |
+| `--neutral-100` | `#F5F5F5` | `#1D1D1C` | Hover backgrounds; the portfolio section; in dark, also the portfolio bar and the contact section |
+| `--neutral-600` | `#525252` | `#A8A8A2` | Metadata, captions, small grey text |
+| `--neutral-700` | `#404040` | `#D0D0CA` | Project descriptions |
+| `--paper` | `#F9F9F7` | `#F9F9F7` | Text over photos and in the photo viewer (the photos don't change) |
 
-Contrast: black on `--bg` >17:1 (AAA). Red on `--bg` >5:1 (AA) — never put red on black.
+Contrast, measured: light: black on `--bg` >17:1, red 5.6:1, grey 7.2:1+. Dark: text 16:1, red 6.0:1 (a lighter red: `#CC0000` on near-black would fail), grey 7.7:1. Every text on a solid background passes WCAG AA in both modes.
 
 ---
 

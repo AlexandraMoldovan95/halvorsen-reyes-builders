@@ -22,8 +22,9 @@ Public, one-page site for the fictional construction company Halvorsen & Reyes B
 ```
 index.html              the site (one page)
 styles.css               styles, tokens from DESIGN.md
-logic.js                 the pure logic (no page, no network): form checks, the row sent, chatbot fallback answers
-script.js                mobile nav, GSAP animations, form, chatbot (the page side)
+logic.js                 the pure logic (no page, no network): form checks, the row sent, chatbot fallback answers, photo viewer step, theme choice
+theme-init.js            sets the dark/light theme before the page is drawn (loaded in <head>, with logic.js)
+script.js                mobile nav, GSAP animations, photo viewer, theme button, form, chatbot (the page side)
 config.js                Supabase URL + anon key (fill in after setup)
 tests/                   unit tests for logic.js (node --test)
 images/                  optimized photos (projects + team)
@@ -33,7 +34,7 @@ supabase/schema.sql       leads table + RLS, admins table + RLS for the admin pa
 supabase/functions/chat/  Edge Function for the chatbot (with a message limit)
 supabase/rate_limits.sql  usage limits: chatbot 20/hour/visitor + 300/day, form 30/hour + 3/day/email
 SUPABASE_SETUP.md         manual setup steps (one time)
-deploy/                   a copy with ONLY the site's files, for Netlify: `netlify deploy --prod --dir deploy` (keep index.html, styles.css, logic.js, script.js, config.js identical to the root ones)
+deploy/                   a copy with ONLY the site's files, for Netlify: `netlify deploy --prod --dir deploy` (keep index.html, styles.css, logic.js, theme-init.js, script.js, config.js identical to the root ones)
 CLAUDE.md, DESIGN.md      context and design decisions for Claude Code
 docs/screenshot.jpg       the picture at the top of this README (not part of the site)
 ```
@@ -44,7 +45,7 @@ docs/screenshot.jpg       the picture at the top of this README (not part of the
 node --test "tests/*.test.js"
 ```
 
-13 unit tests for `logic.js`: the quote form's checks (all five required fields, phone numbers with spaces or brackets, what counts as an email, spaces not counting toward the minimum length), the row sent to Supabase (trimmed, an unchosen budget sent as null, only the six table columns whatever else the form holds), the check for an unconfigured `config.js`, and the chatbot's local fallback (cost questions never get a price, only the way to a quote). Plain Node, nothing to install, no Supabase; they run in CI on every push. The server side (RLS on `leads`, the `chat` function and its limits) was checked on the live project, see the acceptance test below.
+19 unit tests for `logic.js`: the quote form's checks (all five required fields, phone numbers with spaces or brackets, what counts as an email, spaces not counting toward the minimum length), the row sent to Supabase (trimmed, an unchosen budget sent as null, only the six table columns whatever else the form holds), the check for an unconfigured `config.js`, the chatbot's local fallback (cost questions never get a price, only the way to a quote), the photo viewer's next/previous step (wrapping around), and the theme choice (a saved choice wins over the system setting). Plain Node, nothing to install, no Supabase; they run in CI on every push. The server side (RLS on `leads`, the `chat` function and its limits) was checked on the live project, see the acceptance test below.
 
 ## Quick setup
 
@@ -79,7 +80,7 @@ Draft checked: https://6ab52dcb5fd9a02f6634399b--halvorsen-reyes-builders-655f70
 1. **Carousel photos** — before, opening the page downloaded the photos for all 5 projects (22 images, ~559 KB) and competed with the hero photo. Now only project 1 (7 images, ~245 KB); the rest load on navigation. LCP: 5.5s → 4.3s.
 2. **Locally hosted fonts** — Google Fonts pulled in 8 files (~296 KB) from 2 extra domains. Now 7 files (~145 KB), generated from the official sources with only the weights actually used. FCP: 3.8s → 2.0s, LCP: 4.3s → 2.5s.
 3. **No layout shift on font load** — the hero title's width was in `ch` (a unit that depends on the current font), so it jumped from 3 lines to 2 when Playfair loaded (CLS 0.32 on desktop). Widths are now in `em`, and the fallback fonts have adjusted metrics (`size-adjust`). Desktop CLS: 0.32 → 0.002.
-4. Scripts with `defer`, `preconnect` to cdnjs.
+4. Scripts with `defer`, `preconnect` to cdnjs. The exception, added later with the dark theme: `logic.js` (pure functions, ~4 KB) and `theme-init.js` (a few lines) load in `<head>`, so the theme is set before the first paint instead of flashing.
 5. Two visual bugs found along the way: the team photo and the portfolio thumbnails came out stretched/tall on narrow screens (the HTML `height` attribute was overriding `aspect-ratio`) — fixed with `height: auto`.
 
 ## Usage limits (added after submission)

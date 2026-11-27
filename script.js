@@ -269,6 +269,26 @@
     });
   })();
 
+  /* ===================== DARK / LIGHT THEME BUTTON =====================
+     theme-init.js already set data-theme before the page was drawn; this button switches
+     it and saves the choice, which then wins over the system setting on the next visit.
+     aria-pressed tells screen readers whether the dark theme is on. */
+  (function initThemeToggle() {
+    var btn = document.getElementById("themeToggle");
+    if (!btn) return;
+    var root = document.documentElement;
+    function sync() {
+      btn.setAttribute("aria-pressed", root.getAttribute("data-theme") === "dark" ? "true" : "false");
+    }
+    sync();
+    btn.addEventListener("click", function () {
+      var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+      root.setAttribute("data-theme", next);
+      try { localStorage.setItem("hr-theme", next); } catch (e) { /* not saved: it lasts for this visit */ }
+      sync();
+    });
+  })();
+
   /* ===================== QUOTE FORM MODAL ===================== */
   var overlay = document.getElementById("formOverlay");
   var openTriggers = document.querySelectorAll("[data-open-form]");
