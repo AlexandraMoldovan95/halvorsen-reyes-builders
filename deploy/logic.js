@@ -54,10 +54,17 @@ function localBotAnswer(msg) {
   return "I don't have a specific answer for that one. The quote form on this page is the fastest way to reach Camila directly, or call (555) 010-2411.";
 }
 
+/* The photo viewer: which photo comes next. Steps by `delta` (+1 next, -1 previous) and wraps
+   around, so "next" on the last photo shows the first one. With no photos it stays at 0. */
+function stepPhoto(index, delta, count) {
+  if (!(count > 0)) return 0;
+  return (((index + delta) % count) + count) % count;
+}
+
 /* In Node (the tests) `module` exists and the functions are exported; in the browser it
    doesn't, so this is skipped and everything above stays a plain global for script.js. */
 if (typeof module !== "undefined" && module.exports) {
   module.exports = { validateLeadForm: validateLeadForm, buildLeadPayload: buildLeadPayload,
                      isBackendConfigured: isBackendConfigured, CHAT_FALLBACK_NOTICE: CHAT_FALLBACK_NOTICE,
-                     localBotAnswer: localBotAnswer };
+                     localBotAnswer: localBotAnswer, stepPhoto: stepPhoto };
 }

@@ -438,30 +438,69 @@ section { position: relative; }
 .portfolio-arrow svg { stroke: currentColor; }
 .portfolio-arrow:hover:not(:disabled) { background: var(--ink); color: var(--bg); }
 .portfolio-arrow:disabled { opacity: 0.3; cursor: not-allowed; }
+/* Phones: the arrows move under the card, so the card gets the full width
+   (beside it, they left the project text ~20 characters per line). */
+@media (max-width: 640px) {
+  .portfolio-carousel { flex-wrap: wrap; justify-content: center; gap: 0.75rem; }
+  .portfolio-viewport { flex: 0 0 100%; order: -1; }
+}
 
+/* A project's photos: the large one fills the column, the three small ones sit in a
+   row under it (no longer over it, where a 4-slot strip with 3 photos left the large
+   photo showing through the empty slot). Every photo is a button that opens the
+   photo viewer. */
 .project-media {
-  position: relative;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
   border-bottom: 1px solid var(--ink);
 }
 @media (min-width: 900px) {
   .project-media { border-bottom: none; border-right: 1px solid var(--ink); }
 }
-.project-media img.project-hero-img {
-  width: 100%; height: 100%; object-fit: cover; min-height: 320px;
+.project-photo {
+  display: block;
+  position: relative;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: zoom-in;
 }
+.project-photo:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; }
+/* Phones: 3:2 like the files. From 900px the column has the panel's height, and
+   the large photo takes what the row of small ones leaves. */
+.project-hero { aspect-ratio: 3 / 2; overflow: hidden; } /* hidden: the parallax scales the photo up */
+@media (min-width: 900px) {
+  .project-hero { flex: 1; aspect-ratio: auto; min-height: 320px; }
+}
+.project-media img.project-hero-img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover;
+}
+/* "4 photos" in the large photo's corner: says the photos open, also on touch
+   screens, where there is no hover. */
+.photo-zoom {
+  position: absolute; top: 0; right: 0;
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--ink);
+  color: var(--bg);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.photo-zoom svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.6; }
 .project-thumbs {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   border-top: 1px solid var(--ink);
 }
-/* Structure inspired by REFERENCE.md (thorsenconstruction.us): a dark overlay
-   with the project name on hover over each small photo — no text/photos/code
-   copied from there, just the interaction pattern. */
+/* Structure inspired by REFERENCE.md (thorsenconstruction.us): a dark overlay on
+   hover over each small photo — no text/photos/code copied from there, just the
+   interaction pattern. Here it says "View": the photo opens on click. */
 .project-thumbs .thumb {
-  position: relative;
-  width: 25%;
   border-right: 1px solid var(--ink);
 }
 .project-thumbs .thumb:last-child { border-right: none; }
@@ -472,12 +511,12 @@ section { position: relative; }
      aspect-ratio and the thumbnails came out as 320px-tall strips over the
      main photo. */
   height: auto;
-  aspect-ratio: 1;
+  aspect-ratio: 3 / 2;
   object-fit: cover;
   filter: brightness(0.92);
 }
 .project-thumbs .thumb::after {
-  content: attr(data-label);
+  content: "View";
   position: absolute; inset: 0;
   display: flex;
   align-items: center;
@@ -494,7 +533,8 @@ section { position: relative; }
   transition: opacity 0.2s ease-out;
   pointer-events: none;
 }
-.project-thumbs .thumb:hover::after {
+.project-thumbs .thumb:hover::after,
+.project-thumbs .thumb:focus-visible::after {
   opacity: 1;
 }
 @media (prefers-reduced-motion: reduce) {
@@ -653,6 +693,73 @@ section { position: relative; }
 .contact-details dd { margin: 0; }
 .contact-details a { text-decoration: none; border-bottom: 1px solid var(--bg); }
 .contact-details a:hover { color: var(--neutral-200); border-bottom-color: var(--neutral-200); }
+
+/* ===== Photo viewer (the portfolio's photos, full size) ===== */
+.photo-viewer {
+  width: 100vw; height: 100vh; height: 100dvh;
+  max-width: none; max-height: none;
+  margin: 0;
+  padding: 4.5rem 1rem 1.5rem;
+  border: none;
+  background: rgba(17, 17, 17, 0.97);
+  color: var(--bg);
+}
+.photo-viewer[open] {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem;
+}
+.photo-viewer::backdrop { background: transparent; }
+.pv-figure {
+  margin: 0;
+  min-width: 0;
+  display: flex; flex-direction: column; align-items: center; gap: 0.9rem;
+}
+.pv-img {
+  display: block;
+  max-width: 100%;
+  max-height: calc(100dvh - 10rem);
+  width: auto; height: auto;
+  object-fit: contain;
+}
+.pv-caption {
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: 0.4rem 1rem;
+  text-align: center;
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+}
+.pv-count {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  color: var(--neutral-400); /* 7.5:1 on the dark background */
+}
+.pv-close, .pv-arrow {
+  width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--bg);
+  background: transparent;
+  color: var(--bg);
+  cursor: pointer;
+  transition: background 0.2s ease-out, color 0.2s ease-out;
+}
+.pv-close:hover, .pv-arrow:hover { background: var(--bg); color: var(--ink); }
+.pv-close { position: absolute; top: 1rem; right: 1rem; }
+.pv-arrow[hidden] { display: none; }
+.photo-viewer button:focus-visible { outline: 2px solid var(--bg); outline-offset: 3px; }
+/* Phones: the arrows go under the photo, side by side, so the photo gets the full width. */
+@media (max-width: 640px) {
+  .photo-viewer { padding: 4rem 0.75rem 1rem; }
+  .photo-viewer[open] { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr auto; }
+  .pv-figure { grid-column: 1 / -1; grid-row: 1; }
+  .pv-prev { grid-row: 2; justify-self: end; }
+  .pv-next { grid-row: 2; justify-self: start; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .photo-viewer[open] { animation: pv-fade-in 0.2s ease-out; }
+}
+@keyframes pv-fade-in { from { opacity: 0; } to { opacity: 1; } }
 
 /* ===== Quote form modal ===== */
 .modal-overlay {

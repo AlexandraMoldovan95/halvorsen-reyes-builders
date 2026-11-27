@@ -1,5 +1,6 @@
 // Tests for logic.js: the quote form's checks, the row sent to Supabase, the config check,
-// and the chatbot's local fallback answers. No browser, no network, no Supabase.
+// the chatbot's local fallback answers, and the photo viewer's next/previous step.
+// No browser, no network, no Supabase.
 // Run:  node --test tests/
 const test = require("node:test");
 const assert = require("node:assert/strict");
@@ -90,4 +91,22 @@ test("anything else is pointed to the form or a call, not answered with made-up 
 test("the first fallback answer explains that the AI is switched off", () => {
   assert.match(L.CHAT_FALLBACK_NOTICE, /switched off/);
   assert.ok(L.CHAT_FALLBACK_NOTICE.endsWith(" "));   // glued to the answer that follows
+});
+
+// ---------- the photo viewer ----------
+
+test("next and previous move one photo inside a project's set", () => {
+  assert.equal(L.stepPhoto(0, 1, 4), 1);
+  assert.equal(L.stepPhoto(2, -1, 4), 1);
+});
+
+test("next on the last photo shows the first, previous on the first shows the last", () => {
+  assert.equal(L.stepPhoto(3, 1, 4), 0);
+  assert.equal(L.stepPhoto(0, -1, 4), 3);
+});
+
+test("with one photo or none, the viewer stays on it", () => {
+  assert.equal(L.stepPhoto(0, 1, 1), 0);
+  assert.equal(L.stepPhoto(0, -1, 1), 0);
+  assert.equal(L.stepPhoto(0, 1, 0), 0);
 });

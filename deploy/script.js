@@ -200,6 +200,75 @@
     else { window.addEventListener("load", onPageLoaded); }
   })();
 
+  /* ===================== PHOTO VIEWER: a project's photos, full size =====================
+     Each photo in a project panel (the large one and the three small ones) is a button whose
+     data-full is its 1600px file. A click opens that project's photos in a <dialog>: the
+     browser keeps the keyboard inside it and closes it on Escape; here we add the arrows, the
+     caption (the photo's own alt text) and closing on a click outside the photo. On close,
+     focus goes back to the photo that was clicked. */
+  (function initPhotoViewer() {
+    var viewer = document.getElementById("photoViewer");
+    // A browser without <dialog> support: the photos simply stay as they are on the page.
+    if (!viewer || typeof viewer.showModal !== "function") return;
+    var imgEl = document.getElementById("pvImg");
+    var textEl = document.getElementById("pvText");
+    var countEl = document.getElementById("pvCount");
+    var prevBtn = document.getElementById("pvPrev");
+    var nextBtn = document.getElementById("pvNext");
+    var photos = [];   // { src, caption } for each photo of the open project
+    var index = 0;
+    var opener = null;
+
+    function show() {
+      var p = photos[index];
+      imgEl.src = p.src;
+      imgEl.alt = p.caption;
+      textEl.textContent = p.caption;
+      countEl.textContent = (index + 1) + " / " + photos.length;
+      prevBtn.hidden = nextBtn.hidden = photos.length < 2;
+      // Start downloading the next photo now, so "next" shows it without a wait.
+      if (photos.length > 1) new Image().src = photos[stepPhoto(index, 1, photos.length)].src;
+    }
+    function step(delta) {
+      index = stepPhoto(index, delta, photos.length);
+      show();
+    }
+
+    document.querySelectorAll(".project-media").forEach(function (media) {
+      var buttons = media.querySelectorAll(".project-photo[data-full]");
+      buttons.forEach(function (btn, i) {
+        btn.addEventListener("click", function () {
+          photos = Array.prototype.map.call(buttons, function (b) {
+            var img = b.querySelector("img");
+            return { src: b.dataset.full, caption: img ? img.alt : "" };
+          });
+          index = i;
+          opener = btn;
+          show();
+          document.body.style.overflow = "hidden";
+          viewer.showModal();
+        });
+      });
+    });
+
+    prevBtn.addEventListener("click", function () { step(-1); });
+    nextBtn.addEventListener("click", function () { step(1); });
+    document.getElementById("pvClose").addEventListener("click", function () { viewer.close(); });
+    // A click on the dark area around the photo (the dialog itself, not what's inside it) closes it.
+    viewer.addEventListener("click", function (e) { if (e.target === viewer) viewer.close(); });
+    viewer.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowLeft") { e.preventDefault(); step(-1); }
+      else if (e.key === "ArrowRight") { e.preventDefault(); step(1); }
+      // The dialog closes itself on Escape; this keeps the page's own Escape handler
+      // (which closes the chat) from running for the same key press.
+      else if (e.key === "Escape") { e.stopPropagation(); }
+    });
+    viewer.addEventListener("close", function () {
+      document.body.style.overflow = "";
+      if (opener && opener.focus) opener.focus();
+    });
+  })();
+
   /* ===================== QUOTE FORM MODAL ===================== */
   var overlay = document.getElementById("formOverlay");
   var openTriggers = document.querySelectorAll("[data-open-form]");
