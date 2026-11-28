@@ -959,14 +959,23 @@ textarea.field { resize: vertical; min-height: 90px; font-family: var(--font-ui)
 }
 
 /* ===== Footer ===== */
+/* The copyright line and a way back up: on a long one-page site, a reader at the end doesn't
+   scroll all the way up by hand. #top is the portfolio bar, the first thing on the page, so
+   keyboard focus starts there again. */
 .site-footer {
-  padding: 2rem 0;
+  padding: 1.5rem 0;
   font-family: var(--font-mono);
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--neutral-600);
-  text-align: center;
+}
+.footer-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem 1.5rem; }
+.to-top { padding: 0 1.1rem; font-size: 0.75rem; }
+/* Phones: the row wraps in two, and its first line reaches the fixed chat button (bottom 6rem,
+   right 1.25rem, 56px); the text stops short of it. */
+@media (max-width: 600px) {
+  .footer-row > span { padding-right: calc(56px + 1.25rem); }
 }
 
 /* ===== Small utilities (replace a few isolated style="" attributes) ===== */
