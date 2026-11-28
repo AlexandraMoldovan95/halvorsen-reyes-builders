@@ -959,9 +959,7 @@ textarea.field { resize: vertical; min-height: 90px; font-family: var(--font-ui)
 }
 
 /* ===== Footer ===== */
-/* The copyright line and, under it, a way back up (centred): on a long one-page site, a reader
-   at the end doesn't scroll all the way up by hand. #top is the portfolio bar, the first thing
-   on the page, so keyboard focus starts there again. */
+/* The copyright line, centred. */
 .site-footer {
   padding: 1.5rem 0;
   font-family: var(--font-mono);
@@ -970,14 +968,32 @@ textarea.field { resize: vertical; min-height: 90px; font-family: var(--font-ui)
   letter-spacing: 0.1em;
   color: var(--neutral-600);
 }
-.footer-row { display: flex; flex-direction: column; align-items: center; gap: 0.75rem; text-align: center; }
-.to-top { padding: 0 1.1rem; font-size: 0.75rem; }
-/* Phones: the copyright line wraps, and at the bottom of the page it sits level with the fixed
-   chat button (bottom 6rem, right 1.25rem, 56px); the same gap on both sides keeps it centred
-   and clear of the button. */
-@media (max-width: 600px) {
-  .footer-row > span { padding-inline: calc(56px + 1.25rem); }
+.footer-row { text-align: center; text-wrap: balance; }   /* on a phone the line wraps in two even halves, not "...DENVER," + "CO" */
+
+/* "Back to top": a square button in the bottom-right corner, stacked above the chat bubble
+   (which sits at bottom 6rem, right 1.25rem, 56px; and under both, Netlify's badge). Centred
+   on the bubble's column. script.js shows it only on a long page, after half a screen of
+   scrolling (shouldShowToTop in logic.js). */
+.to-top {
+  position: fixed;
+  bottom: calc(6rem + 56px + 12px);
+  right: calc(1.25rem + 6px);
+  z-index: 44;
+  width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0;
+  border-radius: 0;
+  background: var(--ink);
+  color: var(--bg);
+  border: 1px solid var(--bg);
+  box-shadow: 4px 4px 0 0 rgba(17,17,17,0.3);   /* the chat bubble's shadow */
+  cursor: pointer;
+  opacity: 0; visibility: hidden; transform: translateY(6px);
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out, visibility 0.2s, box-shadow 0.2s ease-out;
 }
+.to-top.is-shown { opacity: 1; visibility: visible; transform: none; }
+.to-top:hover { box-shadow: 6px 6px 0 0 rgba(17,17,17,0.3); }
+.to-top svg { width: 20px; height: 20px; }
 
 /* ===== Small utilities (replace a few isolated style="" attributes) ===== */
 .btn-full { width: 100%; }

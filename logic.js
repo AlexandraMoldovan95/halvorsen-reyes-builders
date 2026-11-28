@@ -69,10 +69,18 @@ function pickTheme(saved, systemPrefersDark) {
   return systemPrefersDark ? "dark" : "light";
 }
 
+/* "Back to top" (the button above the chat bubble): shown only when the page is at least two
+   screens tall and the visitor has scrolled down at least half a screen; at the top of the
+   page, or on a page that's barely taller than the screen, it would only be in the way. */
+function shouldShowToTop(scrollY, viewportHeight, pageHeight) {
+  return pageHeight >= viewportHeight * 2 && scrollY >= viewportHeight / 2;
+}
+
 /* In Node (the tests) `module` exists and the functions are exported; in the browser it
    doesn't, so this is skipped and everything above stays a plain global for script.js. */
 if (typeof module !== "undefined" && module.exports) {
   module.exports = { validateLeadForm: validateLeadForm, buildLeadPayload: buildLeadPayload,
                      isBackendConfigured: isBackendConfigured, CHAT_FALLBACK_NOTICE: CHAT_FALLBACK_NOTICE,
-                     localBotAnswer: localBotAnswer, stepPhoto: stepPhoto, pickTheme: pickTheme };
+                     localBotAnswer: localBotAnswer, stepPhoto: stepPhoto, pickTheme: pickTheme,
+                     shouldShowToTop: shouldShowToTop };
 }

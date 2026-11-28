@@ -125,7 +125,7 @@ Placeholders (if a photo is temporarily missing): a radial dot pattern, not flat
 ```
 
 The "Request a quote" button is `.btn-primary`. All tap targets ≥44×44px (required for mobile).
-The footer's "Back to top ↑" is a smaller `.btn-secondary` (`.to-top`), centred under the copyright line; it goes to `#top`, the portfolio bar.
+"Back to top" (`.to-top`) is a 44px square in the chat bubble's style (ink, 1px paper border, the same hard shadow), fixed in the bottom-right corner, stacked above the chat bubble; it appears only on a long page after half a screen of scrolling.
 
 ---
 
@@ -177,7 +177,7 @@ Service icons: no container. The icon sits on the title's line, `28×28px`, `str
 
 - Container: `max-width: 1280px`, centered, `padding-inline: 1rem` (mobile) → `2rem` (desktop).
 - Grid: native CSS Grid, `grid-template-columns: repeat(12, 1fr)`, no framework.
-- Editorial splits, not 50/50: hero `8/4`, services `5/7`. The footer is centred: the copyright line, and "Back to top" under it.
+- Editorial splits, not 50/50: hero `8/4`, services `5/7`. The footer is one centred copyright line.
 - Spacing on an 8px scale: `0.5rem / 1rem / 2rem / 4rem`. Mobile: one step smaller than desktop.
 
 ---

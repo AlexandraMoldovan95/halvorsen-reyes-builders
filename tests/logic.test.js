@@ -1,5 +1,6 @@
 // Tests for logic.js: the quote form's checks, the row sent to Supabase, the config check,
-// the chatbot's local fallback answers, the photo viewer's next/previous step, and the theme.
+// the chatbot's local fallback answers, the photo viewer's next/previous step, the theme, and
+// when "Back to top" shows.
 // No browser, no network, no Supabase.
 // Run:  node --test tests/
 const test = require("node:test");
@@ -126,4 +127,18 @@ test("with nothing saved, the system setting decides", () => {
 test("a saved value that isn't dark or light is ignored", () => {
   assert.equal(L.pickTheme("purple", true), "dark");
   assert.equal(L.pickTheme("", false), "light");
+});
+
+test("back to top: never on a page shorter than two screens, however far it's scrolled", () => {
+  assert.equal(L.shouldShowToTop(0, 900, 1700), false);
+  assert.equal(L.shouldShowToTop(800, 900, 1700), false);
+  assert.equal(L.shouldShowToTop(899, 900, 1799), false);
+});
+
+test("back to top: on a long page, only after half a screen of scrolling", () => {
+  assert.equal(L.shouldShowToTop(0, 900, 4000), false);
+  assert.equal(L.shouldShowToTop(449, 900, 4000), false);
+  assert.equal(L.shouldShowToTop(450, 900, 4000), true);
+  assert.equal(L.shouldShowToTop(3100, 900, 4000), true);
+  assert.equal(L.shouldShowToTop(422, 844, 1688), true);   // exactly two phone screens
 });

@@ -599,4 +599,30 @@
         });
     });
   }
+
+  /* ===================== BACK TO TOP ===================== */
+  /* Shown only on a long page after half a screen of scrolling (shouldShowToTop in logic.js),
+     checked again when the page scrolls, resizes or changes height. A click scrolls to the top
+     (instantly with reduced motion) and puts keyboard focus on the first link, at the top. */
+  var toTop = document.getElementById("toTop");
+  if (toTop) {
+    var toTopQueued = false;
+    var updateToTop = function () {
+      toTopQueued = false;
+      toTop.classList.toggle("is-shown",
+        shouldShowToTop(window.scrollY, window.innerHeight, document.documentElement.scrollHeight));
+    };
+    var queueToTop = function () {
+      if (!toTopQueued) { toTopQueued = true; window.requestAnimationFrame(updateToTop); }
+    };
+    window.addEventListener("scroll", queueToTop, { passive: true });
+    window.addEventListener("resize", queueToTop);
+    if ("ResizeObserver" in window) new ResizeObserver(queueToTop).observe(document.body);
+    toTop.addEventListener("click", function () {
+      window.scrollTo({ top: 0, behavior: prefersReducedMotion ? "auto" : "smooth" });
+      var first = document.querySelector(".portfolio-bar a");
+      if (first) first.focus({ preventScroll: true });
+    });
+    updateToTop();
+  }
 })();
