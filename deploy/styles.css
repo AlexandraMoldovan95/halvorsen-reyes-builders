@@ -959,9 +959,9 @@ textarea.field { resize: vertical; min-height: 90px; font-family: var(--font-ui)
 }
 
 /* ===== Footer ===== */
-/* The copyright line and a way back up: on a long one-page site, a reader at the end doesn't
-   scroll all the way up by hand. #top is the portfolio bar, the first thing on the page, so
-   keyboard focus starts there again. */
+/* The copyright line and, under it, a way back up (centred): on a long one-page site, a reader
+   at the end doesn't scroll all the way up by hand. #top is the portfolio bar, the first thing
+   on the page, so keyboard focus starts there again. */
 .site-footer {
   padding: 1.5rem 0;
   font-family: var(--font-mono);
@@ -970,12 +970,13 @@ textarea.field { resize: vertical; min-height: 90px; font-family: var(--font-ui)
   letter-spacing: 0.1em;
   color: var(--neutral-600);
 }
-.footer-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem 1.5rem; }
+.footer-row { display: flex; flex-direction: column; align-items: center; gap: 0.75rem; text-align: center; }
 .to-top { padding: 0 1.1rem; font-size: 0.75rem; }
-/* Phones: the row wraps in two, and its first line reaches the fixed chat button (bottom 6rem,
-   right 1.25rem, 56px); the text stops short of it. */
+/* Phones: the copyright line wraps, and at the bottom of the page it sits level with the fixed
+   chat button (bottom 6rem, right 1.25rem, 56px); the same gap on both sides keeps it centred
+   and clear of the button. */
 @media (max-width: 600px) {
-  .footer-row > span { padding-right: calc(56px + 1.25rem); }
+  .footer-row > span { padding-inline: calc(56px + 1.25rem); }
 }
 
 /* ===== Small utilities (replace a few isolated style="" attributes) ===== */
